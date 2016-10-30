@@ -13,6 +13,7 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException, DockerException, DockerCertificateException {
         System.out.println("HalloMain");
         Receiver receiver = new Receiver();
+        NormalCase algo = new NormalCase(receiver);
         receiver.receiver();
 
     }

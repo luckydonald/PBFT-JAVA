@@ -1,7 +1,6 @@
 package de.teamproject16.pbft;
 
 import de.teamproject16.pbft.Messages.InitMessage;
-import de.teamproject16.pbft.Messages.Message;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -24,7 +23,7 @@ public class Median {
         int calculate = floatStore.size()/2;
         return floatStore.get(calculate);
     }
-    /*
+/*
     public static void simulate(int count){
         for(int i = 0; i<count; i++){
             double v = Math.random()*10;
