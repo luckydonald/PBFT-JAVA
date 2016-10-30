@@ -64,7 +64,9 @@ public class NormalCase {
                     DockerusAuto.getInstance().getNumber(),
                     DockerusAuto.getInstance().getNumber(), median));
         }
+        if(true){
 
+        }
         }
     }
 

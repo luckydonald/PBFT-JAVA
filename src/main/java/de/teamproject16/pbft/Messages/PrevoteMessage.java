@@ -35,7 +35,7 @@ public class PrevoteMessage extends Message {
      */
     public static PrevoteMessage messageDecipher(JSONObject data) throws JSONException {
         return new PrevoteMessage((Number) data.get("sequence_no"), (Number) data.get("node"),
-                (Number) data.get("leader"), (Float) data.get("value"));
+                (Number) data.get("leader"), (float) data.getDouble("value"));
     }
 
     /**

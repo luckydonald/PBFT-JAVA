@@ -1,11 +1,6 @@
-import com.google.gson.Gson;
-import de.teamproject16.pbft.CancelableLinkedBlockingQueue;
 import de.teamproject16.pbft.Messages.*;
 import org.json.JSONObject;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static de.teamproject16.pbft.Messages.Types.*;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -44,12 +39,8 @@ public class TestMessage {
 
     @Test
     public void testPrevoteMessage() throws Exception{
-        JSONObject testPrev = new JSONObject();
-        testPrev.put("type", PREVOTE);
-        testPrev.put("sequence_no", 3);
-        testPrev.put("node", 1);
-        testPrev.put("leader", 2);
-        testPrev.put("value", 5.3);
+        String s = "{\"node\": 1, \"value\": 5.3, \"type\": 3, \"leader\": 2, \"sequence_no\": 3}";
+        JSONObject testPrev = new JSONObject(s);
         Object te = Message.messageConvert(testPrev);
         assertThat("PrevoteMessage", te, instanceOf(PrevoteMessage.class));
         System.out.println(te.toString());
