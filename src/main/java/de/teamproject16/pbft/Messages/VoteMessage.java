@@ -10,18 +10,18 @@ import static de.teamproject16.pbft.Messages.Types.VOTE;
  */
 public class VoteMessage extends Message {
 
-    public Number node;
-    public Number leader;
-    public Float value;
+    public int node;
+    public int leader;
+    public double value;
 
     /**
      * Vote message
      * @param sequence_no of tries
      * @param node the id of the sender
-     * @param leader
+     * @param leader the leader node
      * @param value of the sensor
      */
-    public VoteMessage(Number sequence_no, Number node, Number leader, Float value) {
+    public VoteMessage(long sequence_no, int node, int leader, double value) {
         super(VOTE, sequence_no);
         this.node = node;
         this.leader = leader;
@@ -35,8 +35,8 @@ public class VoteMessage extends Message {
      * @throws JSONException
      */
     public static VoteMessage messageDecipher(JSONObject data) throws JSONException {
-        return new VoteMessage((Number) data.get("sequence_no"), (Number) data.get("node"),
-                (Number) data.get("leader"), (Float) data.get("value"));
+        return new VoteMessage(data.getInt("sequence_no"), data.getInt("node"),
+                data.getInt("leader"), data.getDouble("value"));
     }
 
     /**

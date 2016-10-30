@@ -22,7 +22,7 @@ public class NormalCase {
     ArrayList<InitMessage> initStore = null;
     Receiver r = null;
     private int sequenceNo;
-    private float median;
+    private double median;
 
     public NormalCase(Receiver receiver) {
         this.r = receiver;
@@ -90,7 +90,7 @@ public class NormalCase {
     }
 
     private VerifyAgreementResult checkAgreement(ArrayList<Message> store) throws DockerException, InterruptedException, UnsupportedEncodingException, DockerCertificateException {
-        float value = 0;
+        double value = 0.0;
         for (Message e : store){
             if (e instanceof PrevoteMessage) {
                 value = ((PrevoteMessage) e).value;
@@ -116,7 +116,7 @@ public class NormalCase {
 
     public boolean verifyProposal() throws InterruptedException {
         ProposeMessage pM = (ProposeMessage) MessageQueue.proposeM.take();
-        float medianS = Median.calculateMedian(pM.value_store);
+        double medianS = Median.calculateMedian(pM.value_store);
         return median == medianS ? true : false;
             //fragen nach gleicher sequenznr. und warum tun wir das nicht beim initstore noch mal?
     }
@@ -133,10 +133,10 @@ public class NormalCase {
         this.sequenceNo = (int) System.currentTimeMillis()/sequencelength;
     }
     class VerifyAgreementResult {
-        private final float value;
+        private final double value;
         private final boolean bool;
 
-        public VerifyAgreementResult(boolean bool, float value) {
+        public VerifyAgreementResult(boolean bool, double value) {
             this.bool = bool;
             this.value = value;
         }

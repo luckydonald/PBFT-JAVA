@@ -9,14 +9,14 @@ import org.json.JSONObject;
 public class Message {
 
     int type;
-    public Number sequence_no;
+    public long sequence_no;
 
     /**
      * Create the basic type of message.
      * @param type messagetype
      * @param sequence_no of tries
      */
-    public Message(int type, Number sequence_no){
+    public Message(int type, long sequence_no){
         this.type = type;
         this.sequence_no = sequence_no;
     }
@@ -76,6 +76,6 @@ public class Message {
         if (Types.VOTE == type){
             return VoteMessage.messageDecipher(data);
         }
-        return new Message(data.getInt("type"), (Number) data.get("sequence_no"));
+        return new Message(data.getInt("type"), data.getLong("sequence_no"));
     }
 }

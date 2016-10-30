@@ -14,9 +14,9 @@ import static de.teamproject16.pbft.Messages.Types.PROPOSE;
  */
 public class ProposeMessage extends Message {
 
-    public Number node;
-    public Number leader;
-    public Number proposal;
+    public int node;
+    public int leader;
+    public double proposal;
     public List<InitMessage> value_store;
 
     /**
@@ -27,7 +27,7 @@ public class ProposeMessage extends Message {
      * @param proposal
      * @param value_store values from all nodes in the network
      */
-    public ProposeMessage(Number sequence_no, Number node, Number leader, Number proposal, List<InitMessage> value_store) {
+    public ProposeMessage(long sequence_no, int node, int leader, double proposal, List<InitMessage> value_store) {
         super(PROPOSE, sequence_no);
         this.node = node;
         this.leader = leader;
@@ -50,8 +50,8 @@ public class ProposeMessage extends Message {
             tmp_value_store.add(InitMessage.messageDecipher(obj));
         }
         return new ProposeMessage(
-                (Number) data.get("sequence_no"), (Number) data.get("node"), (Number) data.get("leader"),
-                (Number) data.get("proposal"), tmp_value_store
+                data.getLong("sequence_no"), data.getInt("node"), data.getInt("leader"),
+                data.getDouble("proposal"), tmp_value_store
         );
     }
 

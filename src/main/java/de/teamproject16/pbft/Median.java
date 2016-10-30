@@ -12,9 +12,9 @@ import java.util.List;
 public class Median {
 
     /** calculates the median of a given initStore list. This list has to only contain the current sequence number. **/
-    public static float calculateMedian(List<InitMessage> initStore) throws InterruptedException {
+    public static double calculateMedian(List<InitMessage> initStore) throws InterruptedException {
         //TODO: Start Locking
-        List<Float> floatStore = new LinkedList<>();
+        List<Double> floatStore = new LinkedList<>();
         for (InitMessage msg : initStore){
             floatStore.add(msg.value);
         }

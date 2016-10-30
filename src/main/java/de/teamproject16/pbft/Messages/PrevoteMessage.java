@@ -9,18 +9,18 @@ import static de.teamproject16.pbft.Messages.Types.PREVOTE;
  */
 public class PrevoteMessage extends Message {
 
-    public Number node;
-    public Number leader;
-    public Float value;
+    public int node;
+    public int leader;
+    public double value;
 
     /**
      * Prevote message
      * @param sequence_no of tries
      * @param node the id of the sender
-     * @param leader
+     * @param leader the leading node
      * @param value from the node
      */
-    public PrevoteMessage(Number sequence_no, Number node, Number leader, Float value) {
+    public PrevoteMessage(long sequence_no, int node, int leader, double value) {
         super(PREVOTE, sequence_no);
         this.node = node;
         this.leader = leader;
@@ -34,8 +34,8 @@ public class PrevoteMessage extends Message {
      * @throws JSONException
      */
     public static PrevoteMessage messageDecipher(JSONObject data) throws JSONException {
-        return new PrevoteMessage((Number) data.get("sequence_no"), (Number) data.get("node"),
-                (Number) data.get("leader"), (float) data.getDouble("value"));
+        return new PrevoteMessage(data.getLong("sequence_no"), data.getInt("node"),
+                data.getInt("leader"), data.getDouble("value"));
     }
 
     /**
