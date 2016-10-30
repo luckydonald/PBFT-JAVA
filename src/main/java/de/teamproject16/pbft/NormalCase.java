@@ -27,7 +27,6 @@ public class NormalCase {
         this.r = receiver;
     }
 
-
     /**
      * The row 15 to 27 from the algorithm.
      * @throws DockerException
@@ -54,13 +53,13 @@ public class NormalCase {
                         )
                 );
             }
-            //wait mit while um die drei if. timeout
 
             ArrayList<Message> prevotStore = new ArrayList<>();
             ArrayList<Message> voteStore = new ArrayList<>();
             boolean prevoteDone = false;
             while(true){
-                this.r.wait();  // waits for a new
+                this.r.wait();  // waits for a new message to allow all 3 ifs to check, but otherwise block.
+
                 if(!MessageQueue.proposeM.isEmpty() && verifyProposal((ProposeMessage) MessageQueue.proposeM.take())){
                     sender.sendMessage(
                             new PrevoteMessage((int) System.currentTimeMillis()/sequencelength,

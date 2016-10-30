@@ -1,6 +1,5 @@
 package de.teamproject16.pbft.Network;
 
-import de.luckydonald.utils.ObjectWithLogger;
 import de.teamproject16.pbft.Messages.Message;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,6 +10,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /* Test with netcat in terminal:
  * $ nc localhost 4458
@@ -23,17 +24,28 @@ import java.nio.charset.Charset;
  * Class to which will receive Messages.
  * It will call {@link Receiver#addMessage(String) this.addMessage(String messageContent)} to process incoming messages.
  **/
-public class Receiver extends ObjectWithLogger {
+public class Receiver extends Thread {
     private static String ANSWER_SYNTAX = "ANSWER ";
+    private Logger logger = null;
+
+    public Receiver() {
+        this.setName("Receiver");
+    }
 
     public void receiver() throws IOException {
         this.receiver(this.newServerSocket());
     }
     public boolean do_quit = false;
 
-    public void receiver(ServerSocket server) throws IOException {
+    public void receiver(ServerSocket server) {
         while (!do_quit) {  // For each connection do  // TODO: self.do_quit or similar
-            Socket socket = server.accept();  // throws IOException
+            Socket socket;
+            try {
+                socket = server.accept();  // throws IOException
+            } catch (IOException e) {
+                this.getLogger().finest("Could not accept server client: " + e.getLocalizedMessage());
+                continue;
+            }
             try {
                 String received = this.receiveFromSocket(socket);
                 this.addMessage(received);
@@ -136,8 +148,28 @@ public class Receiver extends ObjectWithLogger {
         // We do, too, in the finally statement, of the method `receiver()` calling this.
     }
 
+    public Logger getLogger() {
+        if (logger == null) {
+            logger =  Logger.getLogger(this.getClass().getCanonicalName());
+        }
+        logger.setLevel(Level.ALL);
+        return logger;
+    }
+
+
     ServerSocket newServerSocket() throws IOException {
-        return new ServerSocket(4458); // throws IOException
+        ServerSocket s = new ServerSocket(4458);  // throws IOException
+        s.setReuseAddress(true);
+        return s;
+    }
+
+    @Override
+    public void run() {
+        try {
+            this.receiver();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addMessage(String json) {
@@ -150,4 +182,5 @@ public class Receiver extends ObjectWithLogger {
         }
         this.notifyAll();  // In case someone is waiting for new messages.
     }
+
 }
