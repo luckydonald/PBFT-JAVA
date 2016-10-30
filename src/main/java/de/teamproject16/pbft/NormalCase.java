@@ -61,7 +61,7 @@ public class NormalCase {
             boolean prevoteDone = false;
             while(true){
                 this.r.wait();  // waits for a new
-                if(!MessageQueue.proposeM.isEmpty() && verifyProposal()){
+                if(!MessageQueue.proposeM.isEmpty() && verifyProposal((ProposeMessage) MessageQueue.proposeM.take())){
                     sender.sendMessage(
                             new PrevoteMessage((int) System.currentTimeMillis()/sequencelength,
                             DockerusAuto.getInstance().getNumber(),
@@ -81,7 +81,7 @@ public class NormalCase {
                     voteStore.add((VoteMessage) MessageQueue.voteM.take());
                     VerifyAgreementResult agreement = checkAgreement(prevotStore);
                     if(agreement.bool){
-                        return (double) agreement.value;
+                        return agreement.value;
                     }
                 }
             }
@@ -128,12 +128,10 @@ public class NormalCase {
      * @return
      * @throws InterruptedException
      */
-    public boolean verifyProposal() throws InterruptedException {
-        ProposeMessage pM = (ProposeMessage) MessageQueue.proposeM.take();
-        double median = pM.proposal;
-        double medianS = Median.calculateMedian(pM.value_store);
-        return median == medianS ? true : false;
-            //fragen nach gleicher sequenznr. und warum tun wir das nicht beim initstore noch mal?
+    public boolean verifyProposal(ProposeMessage msg) throws InterruptedException {
+        double medianS = Median.calculateMedian(msg.value_store);
+        return msg.proposal == medianS;
+        //fragen nach gleicher sequenznr. und warum tun wir das nicht beim initstore noch mal?
     }
 
     /**
