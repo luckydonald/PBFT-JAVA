@@ -27,7 +27,9 @@ public class CancelableLinkedBlockingQueue<T> extends LinkedBlockingQueue<T> {
      */
     public void cancel() {
         canceled = true;
-        this.notifyAll();
+        synchronized (this) {
+            notifyAll();
+        }
     }
 
     public boolean isCanceled() {
@@ -49,7 +51,9 @@ public class CancelableLinkedBlockingQueue<T> extends LinkedBlockingQueue<T> {
     @Override
     public void put(T element) throws InterruptedException {
         super.put(element);
-        this.notify();
+        synchronized (this) {
+            notify();
+        }
     }
 
 
