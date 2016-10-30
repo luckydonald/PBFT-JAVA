@@ -6,6 +6,7 @@ import de.luckydonald.utils.dockerus.DockerusAuto;
 import de.teamproject16.pbft.Messages.InitMessage;
 import de.teamproject16.pbft.Messages.PrevoteMessage;
 import de.teamproject16.pbft.Messages.ProposeMessage;
+import de.teamproject16.pbft.Messages.VoteMessage;
 import de.teamproject16.pbft.Network.MessageQueue;
 import de.teamproject16.pbft.Network.Receiver;
 import de.teamproject16.pbft.Network.Sender;
@@ -58,6 +59,10 @@ public class NormalCase {
                 );
             }
             //wait mit while um die drei if. timeout
+
+            ArrayList<PrevoteMessage> prevotStore = new ArrayList<>();
+            ArrayList<VoteMessage> voteStore = new ArrayList<>();
+            boolean prevoteDone = false;
             while(true){
                 if(!MessageQueue.proposeM.isEmpty() && verifyProposal()){
                     sender.sendMessage(
@@ -65,8 +70,28 @@ public class NormalCase {
                             DockerusAuto.getInstance().getNumber(),
                             DockerusAuto.getInstance().getNumber(), median));
                 }
-                if(true){
+                if(!MessageQueue.prevoteM.isEmpty() && !prevoteDone){ //abfrage das die sequenznr stimmt fehlt
+                    prevotStore.add((PrevoteMessage) MessageQueue.prevoteM.take());
+                    for (PrevoteMessage e : prevotStore){
+                        float value = e.value;
+                        int count = 0;
+                        for (PrevoteMessage i : prevotStore){
+                            if (value == i.value){
+                                count++;
+                            }
+                        }
+                        if (count >= (DockerusAuto.getInstance().getHostnames(true).size() - 1)/3){
+                            sender.sendMessage(new VoteMessage((int) System.currentTimeMillis()/sequencelength,
+                                    DockerusAuto.getInstance().getNumber(),
+                                    DockerusAuto.getInstance().getNumber(), value));
+                            prevoteDone = true;
+                            break;
+                        }
 
+                    }
+                }
+                if(!MessageQueue.voteM.isEmpty()){//abfrage dessen das der median bei genügend node gleich ist und sequenznr stimmt fehlt
+                    voteStore.add((VoteMessage) MessageQueue.voteM.take());
                 }
             }
         }
@@ -78,6 +103,7 @@ public class NormalCase {
         return median == medianS ? true : false;
             //fragen nach gleicher sequenznr. und warum tun wir das nicht beim initstore noch mal?
     }
+
 
     public void cleanUp() {
         if(this.initStore != null) {

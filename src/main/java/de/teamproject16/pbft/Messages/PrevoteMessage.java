@@ -9,9 +9,9 @@ import static de.teamproject16.pbft.Messages.Types.PREVOTE;
  */
 public class PrevoteMessage extends Message {
 
-    Number node;
-    Number leader;
-    Float value;
+    public Number node;
+    public Number leader;
+    public Float value;
 
     /**
      * Prevote message
