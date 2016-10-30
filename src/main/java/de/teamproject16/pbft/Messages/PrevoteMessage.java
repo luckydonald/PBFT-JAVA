@@ -11,7 +11,7 @@ public class PrevoteMessage extends Message {
 
     Number node;
     Number leader;
-    Double value;
+    Float value;
 
     /**
      * Prevote message
@@ -20,7 +20,7 @@ public class PrevoteMessage extends Message {
      * @param leader
      * @param value from the node
      */
-    public PrevoteMessage(Number sequence_no, Number node, Number leader, Double value) {
+    public PrevoteMessage(Number sequence_no, Number node, Number leader, Float value) {
         super(PREVOTE, sequence_no);
         this.node = node;
         this.leader = leader;
@@ -35,7 +35,7 @@ public class PrevoteMessage extends Message {
      */
     public static PrevoteMessage messageDecipher(JSONObject data) throws JSONException {
         return new PrevoteMessage((Number) data.get("sequence_no"), (Number) data.get("node"),
-                (Number) data.get("leader"), (Double) data.getDouble("value"));
+                (Number) data.get("leader"), (Float) data.get("value"));
     }
 
     /**

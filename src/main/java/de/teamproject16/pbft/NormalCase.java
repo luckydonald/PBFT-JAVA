@@ -4,7 +4,9 @@ import com.spotify.docker.client.DockerCertificateException;
 import com.spotify.docker.client.DockerException;
 import de.luckydonald.utils.dockerus.DockerusAuto;
 import de.teamproject16.pbft.Messages.InitMessage;
+import de.teamproject16.pbft.Messages.PrevoteMessage;
 import de.teamproject16.pbft.Messages.ProposeMessage;
+import de.teamproject16.pbft.Network.MessageQueue;
 import de.teamproject16.pbft.Network.Receiver;
 import de.teamproject16.pbft.Network.Sender;
 
@@ -22,6 +24,7 @@ public class NormalCase {
     ArrayList<InitMessage> initStore = null;
     Receiver r = null;
     private int sequenceNo;
+    private float median;
 
     public NormalCase(Receiver receiver) {
         this.r = receiver;
@@ -43,7 +46,7 @@ public class NormalCase {
 
         if(this.leader == DockerusAuto.getInstance().getNumber()){
             if(this.initStore.size() >= (DockerusAuto.getInstance().getHostnames(true).size() - 1)/3){
-                float median = Median.calculateMedian(this.initStore);
+                median = Median.calculateMedian(this.initStore);
                 sender.sendMessage(
                         new ProposeMessage(
                                 (int) System.currentTimeMillis()/sequencelength,
@@ -54,9 +57,22 @@ public class NormalCase {
                         )
                 );
             }
-            //notify soll auf timeout oder genügend nachrichten warten
+            //wait mit while um die drei if. timeout
+        if(!MessageQueue.proposeM.isEmpty() && verifyProposal()){
+            sender.sendMessage(
+                    new PrevoteMessage((int) System.currentTimeMillis()/sequencelength,
+                    DockerusAuto.getInstance().getNumber(),
+                    DockerusAuto.getInstance().getNumber(), median));
+        }
 
         }
+    }
+
+    public Boolean verifyProposal() throws InterruptedException {
+        ProposeMessage pM = (ProposeMessage) MessageQueue.proposeM.take();
+        float medianS = Median.calculateMedian(pM.value_store);
+        return median == medianS ? true : false;
+            //fragen nach gleicher sequenznr. und warum tun wir das nicht beim initstore noch mal?
     }
 
     public void cleanUp() {

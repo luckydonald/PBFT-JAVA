@@ -1,8 +1,5 @@
 package de.teamproject16.pbft.Messages;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import de.teamproject16.pbft.CancelableLinkedBlockingQueue;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,10 +14,10 @@ import static de.teamproject16.pbft.Messages.Types.PROPOSE;
  */
 public class ProposeMessage extends Message {
 
-    Number node;
-    Number leader;
-    Number proposal;
-    List<InitMessage> value_store;
+    public Number node;
+    public Number leader;
+    public Number proposal;
+    public List<InitMessage> value_store;
 
     /**
      * Propose message
