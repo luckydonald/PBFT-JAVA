@@ -58,15 +58,17 @@ public class NormalCase {
                 );
             }
             //wait mit while um die drei if. timeout
-        if(!MessageQueue.proposeM.isEmpty() && verifyProposal()){
-            sender.sendMessage(
-                    new PrevoteMessage((int) System.currentTimeMillis()/sequencelength,
-                    DockerusAuto.getInstance().getNumber(),
-                    DockerusAuto.getInstance().getNumber(), median));
-        }
-        if(true){
+            while(true){
+                if(!MessageQueue.proposeM.isEmpty() && verifyProposal()){
+                    sender.sendMessage(
+                            new PrevoteMessage((int) System.currentTimeMillis()/sequencelength,
+                            DockerusAuto.getInstance().getNumber(),
+                            DockerusAuto.getInstance().getNumber(), median));
+                }
+                if(true){
 
-        }
+                }
+            }
         }
     }
 
