@@ -59,6 +59,7 @@ public class NormalCase {
             }
             //wait mit while um die drei if. timeout
             while(true){
+                this.r.wait();  // waits for a new
                 if(!MessageQueue.proposeM.isEmpty() && verifyProposal()){
                     sender.sendMessage(
                             new PrevoteMessage((int) System.currentTimeMillis()/sequencelength,

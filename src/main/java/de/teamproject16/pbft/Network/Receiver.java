@@ -148,5 +148,6 @@ public class Receiver extends ObjectWithLogger {
             System.out.println("Convert the String to JSONObject failed.");
             e.printStackTrace();
         }
+        this.notifyAll();  // In case someone is waiting for new messages.
     }
 }
