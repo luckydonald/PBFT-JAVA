@@ -88,6 +88,15 @@ public class NormalCase {
         return 0;
     }
 
+    /**
+     * Verify the calculated median for the result.
+     * @param store
+     * @return a tuple as VerifyAgreementResult
+     * @throws DockerException
+     * @throws InterruptedException
+     * @throws UnsupportedEncodingException
+     * @throws DockerCertificateException
+     */
     private VerifyAgreementResult checkAgreement(ArrayList<Message> store) throws DockerException, InterruptedException, UnsupportedEncodingException, DockerCertificateException {
         float value = 0;
         for (Message e : store){
@@ -114,7 +123,7 @@ public class NormalCase {
     }
 
     /**
-     * Verify the
+     * Verify the propose message.
      * @return
      * @throws InterruptedException
      */
