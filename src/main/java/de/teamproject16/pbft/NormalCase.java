@@ -3,10 +3,7 @@ package de.teamproject16.pbft;
 import com.spotify.docker.client.DockerCertificateException;
 import com.spotify.docker.client.DockerException;
 import de.luckydonald.utils.dockerus.DockerusAuto;
-import de.teamproject16.pbft.Messages.InitMessage;
-import de.teamproject16.pbft.Messages.PrevoteMessage;
-import de.teamproject16.pbft.Messages.ProposeMessage;
-import de.teamproject16.pbft.Messages.VoteMessage;
+import de.teamproject16.pbft.Messages.*;
 import de.teamproject16.pbft.Network.MessageQueue;
 import de.teamproject16.pbft.Network.Receiver;
 import de.teamproject16.pbft.Network.Sender;
@@ -46,7 +43,7 @@ public class NormalCase {
         sender.sendMessage(new InitMessage(this.sequenceNo, DockerusAuto.getInstance().getNumber(), ToDO.getSensorValue()));  //UNixtimestampe
 
         if(this.leader == DockerusAuto.getInstance().getNumber()){
-            if(this.initStore.size() >= (DockerusAuto.getInstance().getHostnames(true).size() - 1)/3){
+            if(this.initStore.size() >= getFaultyCount()){
                 median = Median.calculateMedian(this.initStore);
                 sender.sendMessage(
                         new ProposeMessage(
@@ -60,8 +57,8 @@ public class NormalCase {
             }
             //wait mit while um die drei if. timeout
 
-            ArrayList<PrevoteMessage> prevotStore = new ArrayList<>();
-            ArrayList<VoteMessage> voteStore = new ArrayList<>();
+            ArrayList<Message> prevotStore = new ArrayList<>();
+            ArrayList<Message> voteStore = new ArrayList<>();
             boolean prevoteDone = false;
             while(true){
                 if(!MessageQueue.proposeM.isEmpty() && verifyProposal()){
@@ -72,38 +69,60 @@ public class NormalCase {
                 }
                 if(!MessageQueue.prevoteM.isEmpty() && !prevoteDone){ //abfrage das die sequenznr stimmt fehlt
                     prevotStore.add((PrevoteMessage) MessageQueue.prevoteM.take());
-                    for (PrevoteMessage e : prevotStore){
-                        float value = e.value;
-                        int count = 0;
-                        for (PrevoteMessage i : prevotStore){
-                            if (value == i.value){
-                                count++;
-                            }
-                        }
-                        if (count >= (DockerusAuto.getInstance().getHostnames(true).size() - 1)/3){
-                            sender.sendMessage(new VoteMessage((int) System.currentTimeMillis()/sequencelength,
-                                    DockerusAuto.getInstance().getNumber(),
-                                    DockerusAuto.getInstance().getNumber(), value));
-                            prevoteDone = true;
-                            break;
-                        }
-
+                    VerifyAgreementResult agreement = checkAgreement(prevotStore);
+                    if(agreement.bool){
+                    sender.sendMessage(new VoteMessage((int) System.currentTimeMillis()/sequencelength,
+                            DockerusAuto.getInstance().getNumber(),
+                            DockerusAuto.getInstance().getNumber(), agreement.value));
+                        prevoteDone = true;
                     }
                 }
                 if(!MessageQueue.voteM.isEmpty()){//abfrage dessen das der median bei genügend node gleich ist und sequenznr stimmt fehlt
                     voteStore.add((VoteMessage) MessageQueue.voteM.take());
+                    VerifyAgreementResult agreement = checkAgreement(prevotStore);
+                    if(agreement.bool){
+                        median = agreement.value;
+                    }
                 }
             }
         }
     }
 
-    public Boolean verifyProposal() throws InterruptedException {
+    private VerifyAgreementResult checkAgreement(ArrayList<Message> store) throws DockerException, InterruptedException, UnsupportedEncodingException, DockerCertificateException {
+        float value = 0;
+        for (Message e : store){
+            if (e instanceof PrevoteMessage) {
+                value = ((PrevoteMessage) e).value;
+            } else
+            if (e instanceof VoteMessage) {
+                value = ((VoteMessage) e).value;
+            } else {
+                throw new IllegalArgumentException("Needs type PrevoteMessage or VoteMessage.");
+            }
+            int count = 0;
+            for (Message i : store){
+                if (((i instanceof PrevoteMessage && value == ((PrevoteMessage)i).value)
+                  || (i instanceof VoteMessage && value == ((VoteMessage) i).value))){
+                    count++;
+                }
+            }
+            if (count >= ((DockerusAuto.getInstance().getHostnames(true).size() + getFaultyCount())/2)){
+                return new VerifyAgreementResult(true, value);
+            }
+        }
+        return new VerifyAgreementResult(false, value);
+    }
+
+    public boolean verifyProposal() throws InterruptedException {
         ProposeMessage pM = (ProposeMessage) MessageQueue.proposeM.take();
         float medianS = Median.calculateMedian(pM.value_store);
         return median == medianS ? true : false;
             //fragen nach gleicher sequenznr. und warum tun wir das nicht beim initstore noch mal?
     }
 
+    public double getFaultyCount() throws DockerException, InterruptedException {
+        return (DockerusAuto.getInstance().getHostnames(true).size() -  1)/3;
+    }
 
     public void cleanUp() {
         if(this.initStore != null) {
@@ -111,5 +130,14 @@ public class NormalCase {
             this.initStore = null;
         }
         this.sequenceNo = (int) System.currentTimeMillis()/sequencelength;
+    }
+    class VerifyAgreementResult {
+        private final float value;
+        private final boolean bool;
+
+        public VerifyAgreementResult(boolean bool, float value) {
+            this.bool = bool;
+            this.value = value;
+        }
     }
 }
