@@ -14,6 +14,8 @@ public class Main {
         System.out.println("HalloMain");
         Receiver receiver = new Receiver();
         NormalCase algo = new NormalCase(receiver);
+        double result = algo.normalFunction();
+        System.out.println(result);
         receiver.receiver();
 
     }

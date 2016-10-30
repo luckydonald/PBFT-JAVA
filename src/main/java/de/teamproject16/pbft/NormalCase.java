@@ -22,7 +22,6 @@ public class NormalCase {
     ArrayList<InitMessage> initStore = null;
     Receiver r = null;
     private int sequenceNo;
-    private double median;
 
     public NormalCase(Receiver receiver) {
         this.r = receiver;
@@ -36,7 +35,7 @@ public class NormalCase {
      * @throws UnsupportedEncodingException
      * @throws DockerCertificateException
      */
-    public void normalFunction() throws DockerException, InterruptedException, UnsupportedEncodingException, DockerCertificateException {
+    public double normalFunction() throws DockerException, InterruptedException, UnsupportedEncodingException, DockerCertificateException {
         Sender sender = new Sender();
         initStore = new ArrayList<>();
 
@@ -44,13 +43,13 @@ public class NormalCase {
 
         if(this.leader == DockerusAuto.getInstance().getNumber()){
             if(this.initStore.size() >= getFaultyCount()){
-                median = Median.calculateMedian(this.initStore);
+
                 sender.sendMessage(
                         new ProposeMessage(
                                 (int) System.currentTimeMillis()/sequencelength,
                                 DockerusAuto.getInstance().getNumber(),
                                 DockerusAuto.getInstance().getNumber(),
-                                median,
+                                Median.calculateMedian(this.initStore),
                                 initStore
                         )
                 );
@@ -66,7 +65,7 @@ public class NormalCase {
                     sender.sendMessage(
                             new PrevoteMessage((int) System.currentTimeMillis()/sequencelength,
                             DockerusAuto.getInstance().getNumber(),
-                            DockerusAuto.getInstance().getNumber(), median));
+                            DockerusAuto.getInstance().getNumber(), Median.calculateMedian(this.initStore)));
                 }
                 if(!MessageQueue.prevoteM.isEmpty() && !prevoteDone){ //abfrage das die sequenznr stimmt fehlt
                     prevotStore.add((PrevoteMessage) MessageQueue.prevoteM.take());
@@ -82,13 +81,23 @@ public class NormalCase {
                     voteStore.add((VoteMessage) MessageQueue.voteM.take());
                     VerifyAgreementResult agreement = checkAgreement(prevotStore);
                     if(agreement.bool){
-                        median = agreement.value;
+                        return (double) agreement.value;
                     }
                 }
             }
         }
+        return 0;
     }
 
+    /**
+     * Verify the calculated median for the result.
+     * @param store
+     * @return a tuple as VerifyAgreementResult
+     * @throws DockerException
+     * @throws InterruptedException
+     * @throws UnsupportedEncodingException
+     * @throws DockerCertificateException
+     */
     private VerifyAgreementResult checkAgreement(ArrayList<Message> store) throws DockerException, InterruptedException, UnsupportedEncodingException, DockerCertificateException {
         double value = 0.0;
         for (Message e : store){
@@ -114,17 +123,32 @@ public class NormalCase {
         return new VerifyAgreementResult(false, value);
     }
 
+    /**
+     * Verify the propose message.
+     * @return
+     * @throws InterruptedException
+     */
     public boolean verifyProposal() throws InterruptedException {
         ProposeMessage pM = (ProposeMessage) MessageQueue.proposeM.take();
+        double median = pM.proposal;
         double medianS = Median.calculateMedian(pM.value_store);
         return median == medianS ? true : false;
             //fragen nach gleicher sequenznr. und warum tun wir das nicht beim initstore noch mal?
     }
 
+    /**
+     * Calculates the faulty nodes.
+     * @return
+     * @throws DockerException
+     * @throws InterruptedException
+     */
     public double getFaultyCount() throws DockerException, InterruptedException {
         return (DockerusAuto.getInstance().getHostnames(true).size() -  1)/3;
     }
 
+    /**
+     * Clean the memory for a new sequence number.
+     */
     public void cleanUp() {
         if(this.initStore != null) {
             this.initStore.clear();
@@ -132,6 +156,11 @@ public class NormalCase {
         }
         this.sequenceNo = (int) System.currentTimeMillis()/sequencelength;
     }
+
+
+    /**
+     * A class for return tupel in java.
+     */
     class VerifyAgreementResult {
         private final double value;
         private final boolean bool;
