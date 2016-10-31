@@ -20,10 +20,11 @@ public class TestMessage {
     @Test
     public void testInitMessageConvert() throws Exception{
         String json = "{\"node\": 1, \"value\": 5.3, \"type\": 1, \"sequence_no\": 3}";
-        JSONObject testInit = new JSONObject(json);
-        Object te = Message.messageConvert(testInit);
-        assertThat("InitMessage", te, instanceOf(InitMessage.class));
+        JSONObject jsonObj = new JSONObject(json);
+        Message te = Message.messageConvert(jsonObj);
         System.out.println(te.toString());
+        assertThat("InitMessage instance", te, instanceOf(InitMessage.class));
+        assertEquals("InitMessage messageEncode()", jsonObj.toString(), te.messageEncode().toString());
     }
 
     @Test
@@ -35,28 +36,31 @@ public class TestMessage {
                 "{\"node\": 3, \"value\": 0.3, \"type\": 1, \"sequence_no\": 1}, " +
                 "{\"node\": 4, \"value\": 0.3, \"type\": 1, \"sequence_no\": 1}" +
                 "]}";
-        JSONObject json_obj = new JSONObject(json);
-        Object te = Message.messageConvert(json_obj);
-        assertThat("ProposeMessage", te, instanceOf(ProposeMessage.class));
+        JSONObject jsonObj = new JSONObject(json);
+        Message te = Message.messageConvert(jsonObj);
         System.out.println(te.toString());
+        assertThat("ProposeMessage instance", te, instanceOf(ProposeMessage.class));
+        assertEquals("ProposeMessage messageEncode()", jsonObj.toString(), te.messageEncode().toString());
     }
 
     @Test
     public void testPrevoteMessage() throws Exception{
         String json = "{\"node\": 1, \"value\": 5.3, \"type\": 3, \"leader\": 2, \"sequence_no\": 3}";
-        JSONObject testPrev = new JSONObject(json);
-        Object te = Message.messageConvert(testPrev);
-        assertThat("PrevoteMessage", te, instanceOf(PrevoteMessage.class));
+        JSONObject jsonObj = new JSONObject(json);
+        Message te = Message.messageConvert(jsonObj);
         System.out.println(te.toString());
+        assertThat("PrevoteMessage instance", te, instanceOf(PrevoteMessage.class));
+        assertEquals("PrevoteMessage messageEncode()", jsonObj.toString(), te.messageEncode().toString());
     }
 
     @Test
     public void testVoteMessage() throws Exception{
         String json = "{\"node\": 1, \"value\": 5.3, \"type\": 4, \"leader\": 2, \"sequence_no\": 3}";
-        JSONObject testVote = new JSONObject(json);
-        Object te = Message.messageConvert(testVote);
-        assertThat("VoteMessage", te, instanceOf(VoteMessage.class));
+        JSONObject jsonObj = new JSONObject(json);
+        Message te = Message.messageConvert(jsonObj);
         System.out.println(te.toString());
+        assertThat("VoteMessage instance", te, instanceOf(VoteMessage.class));
+        assertEquals("VoteMessage messageEncode()", jsonObj.toString(), te.messageEncode().toString());
     }
 
     @Test
@@ -68,8 +72,10 @@ public class TestMessage {
                 "{\"node\": 3, \"value\": 0.3, \"type\": 1, \"sequence_no\": 1}, " +
                 "{\"node\": 4, \"value\": 0.3, \"type\": 1, \"sequence_no\": 1}" +
                 "]}";
-        JSONObject json_obj = new JSONObject(json);
-        ProposeMessage te = (ProposeMessage) Message.messageConvert(json_obj);
-        assertEquals("VerifyProposal", NormalCase.verifyProposal(te), false);
+        JSONObject jsonObj = new JSONObject(json);
+        ProposeMessage te = (ProposeMessage) Message.messageConvert(jsonObj);
+        assertEquals("VerifyProposal instance", NormalCase.verifyProposal(te), false);
+        assertEquals("VerifyProposal messageEncode()", jsonObj.toString(), te.messageEncode().toString());
+
     }
 }
