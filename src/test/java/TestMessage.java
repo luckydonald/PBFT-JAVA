@@ -3,7 +3,10 @@ import de.teamproject16.pbft.NormalCase;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import static de.teamproject16.pbft.Messages.Types.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static de.teamproject16.pbft.Messages.Types.PROPOSE;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -66,5 +69,21 @@ public class TestMessage {
         JSONObject json_obj = new JSONObject(json);
         ProposeMessage te = (ProposeMessage) Message.messageConvert(json_obj);
         assertEquals("VerifyProposal", NormalCase.verifyProposal(te), false);
+    }
+
+    @Test
+    public void testmedian() throws Exception{
+        List<InitMessage> initStore;
+        String init1 = "\"{\"node\": 2, \"value\": 0.4, \"type\": 1, \"sequence_no\": 1}";
+        String init2 = "{\"node\": 1, \"value\": 0.6, \"type\": 1, \"sequence_no\": 1}";
+        String init3 = "{\"node\": 3, \"value\": 0.3, \"type\": 1, \"sequence_no\": 1}";
+        String init4 = "{\"node\": 4, \"value\": 0.3, \"type\": 1, \"sequence_no\": 1}";
+        InitMessage init = new InitMessage();
+
+    }
+
+    @Test
+    public void testAgreementResult() throws Exception{
+        ArrayList<Message> store = new ArrayList<>();
     }
 }
