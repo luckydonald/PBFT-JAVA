@@ -1,5 +1,6 @@
 package de.teamproject16.pbft.Messages;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -44,7 +45,6 @@ public class ProposeMessage extends Message {
     public static ProposeMessage messageDecipher(JSONObject data) throws JSONException {
         int len = data.getJSONArray("value_store").length();
         ArrayList<InitMessage> tmp_value_store = new ArrayList<>(len);
-
         for(int i=0; i < len; i++) {
             JSONObject obj = data.getJSONArray("value_store").getJSONObject(i);
             tmp_value_store.add(InitMessage.messageDecipher(obj));
@@ -65,7 +65,11 @@ public class ProposeMessage extends Message {
         data.put("node", this.node);
         data.put("leader", this.leader);
         data.put("proposal", this.proposal);
-        data.put("value_store", this.value_store);
+        JSONArray value_store_temp = new JSONArray();
+        for (InitMessage msg : this.value_store) {
+            value_store_temp.put(msg.messageEncode());
+        }
+        data.put("value_store", value_store_temp);
         return data;
     }
 }
