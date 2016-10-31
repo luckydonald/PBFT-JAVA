@@ -2,6 +2,7 @@ package de.teamproject16.pbft;
 
 import com.spotify.docker.client.DockerCertificateException;
 import com.spotify.docker.client.DockerException;
+import de.luckydonald.utils.dockerus.DockerusAuto;
 import de.teamproject16.pbft.Network.Receiver;
 import org.json.JSONException;
 
@@ -25,6 +26,17 @@ public class Main {
         Receiver receiver = new Receiver();
         receiver.start();
         NormalCase algo = new NormalCase(receiver);
+        StringBuilder sb = new StringBuilder("[Environment] \n");
+        sb.append("Node container: ").append(DockerusAuto.getInstance().getEnvHostname()).append("\n");
+        sb.append("Node hostname:  ").append(DockerusAuto.getInstance().getHostname()).append("\n");
+        sb.append("Node number:    ").append(DockerusAuto.getInstance().getNumber()).append("\n");
+        sb.append("Node name:      ").append(DockerusAuto.getInstance().getName()).append("\n");
+        sb.append("Node project:   ").append(DockerusAuto.getInstance().getProject()).append("\n");
+        sb.append("\n[Other nodes]\n");
+        for (String n : DockerusAuto.getInstance().getHostnames(false)) {
+            sb.append(" - ").append(n).append("\n");
+        }
+        System.out.println(sb.toString());
 
         while(true) {
             System.out.println("### STARTING ROUND ###");
