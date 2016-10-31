@@ -72,20 +72,4 @@ public class TestMessage {
         ProposeMessage te = (ProposeMessage) Message.messageConvert(json_obj);
         assertEquals("VerifyProposal", NormalCase.verifyProposal(te), false);
     }
-
-    @Test
-    public void testmedian() throws Exception{
-        List<InitMessage> initStore = new LinkedList<>();
-        InitMessage init1 = new InitMessage(1,1,0.4);
-        InitMessage init2 = new InitMessage(1,2,0.3);
-        InitMessage init3 = new InitMessage(1,3,0.3);
-        InitMessage init4 = new InitMessage(1,4,0.5);
-        initStore.add(init1);
-        initStore.add(init2);
-        initStore.add(init3);
-        initStore.add(init4);
-        assertEquals(0.4, Median.calculateMedian(initStore), 0);
-
-    }
-
 }

@@ -7,6 +7,7 @@ import de.teamproject16.pbft.Messages.*;
 import de.teamproject16.pbft.Network.MessageQueue;
 import de.teamproject16.pbft.Network.Receiver;
 import de.teamproject16.pbft.Network.Sender;
+import org.json.JSONException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
