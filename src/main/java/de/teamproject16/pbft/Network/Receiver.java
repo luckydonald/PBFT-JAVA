@@ -175,6 +175,7 @@ public class Receiver extends Thread {
     public void addMessage(String json) {
         synchronized (this) {
             try {
+                System.out.println("RECEIVED SOMETHING!!!!!" + json);
                 JSONObject data = new JSONObject(json);
                 MessageQueue.messageQueue(Message.messageConvert(data));
             } catch (JSONException e) {
