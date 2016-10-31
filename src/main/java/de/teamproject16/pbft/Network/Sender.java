@@ -42,7 +42,7 @@ public class Sender {
      * @throws InterruptedException
      */
     public void broadcast(String message) throws UnsupportedEncodingException, DockerCertificateException, DockerException, InterruptedException {
-        List<String> otherHostnames = DockerusAuto.getInstance().getHostnames(true);
+        List<String> otherHostnames = DockerusAuto.getInstance().getHostnames(false);
         message += "\n";
         msg = "ANSWER " + message.length() + "\n" + message;
         byte[] msgBytes = msg.getBytes("UTF-8");

@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * Created by IngridBoldt on 26.10.16.
  */
 public class NormalCase {
-    public int sequencelength = 1000;
+    public int sequencelength = 10000;
 
     int leader = 1;
 
@@ -38,51 +38,70 @@ public class NormalCase {
     public double normalFunction() throws DockerException, InterruptedException, UnsupportedEncodingException, DockerCertificateException, JSONException {
         Sender sender = new Sender();
         initStore = new ArrayList<>();
+        sequenceNo = (int) System.currentTimeMillis() / sequencelength;
 
         sender.sendMessage(new InitMessage(this.sequenceNo, DockerusAuto.getInstance().getNumber(), ToDO.getSensorValue()));  //UNixtimestampe
-
-        if(this.leader == DockerusAuto.getInstance().getNumber()) {
-            if (this.initStore.size() >= getFaultyCount()) {
-                sender.sendMessage(
-                        new ProposeMessage(
-                                (int) System.currentTimeMillis() / sequencelength,
-                                DockerusAuto.getInstance().getNumber(),
-                                DockerusAuto.getInstance().getNumber(),
-                                Median.calculateMedian(this.initStore),
-                                initStore
-                        )
-                );
-            }
-        }
-
+        System.out.println("NODE ID: " + DockerusAuto.getInstance().getNumber());
         ArrayList<Message> prevoteStore = new ArrayList<>();
         ArrayList<Message> voteStore = new ArrayList<>();
-        boolean prevoteDone = false;
+        int state = 0;
+        // prevoteDone = false;
         while(true){
             synchronized (this.r) {
-                this.r.wait();  // waits for a new message to allow all 3 ifs to check, but otherwise block.
-                if (!MessageQueue.proposeM.isEmpty() && verifyProposal((ProposeMessage) MessageQueue.proposeM.take())) {
+                if(!MessageQueue.initM.isEmpty()) {
+                    System.out.println("InitMessage!");
+                    this.initStore.add((InitMessage) MessageQueue.initM.take());
+                }
+                if(state == 0) {
+                    if(this.leader == DockerusAuto.getInstance().getNumber()) {
+                        System.out.println("LEADER! Got " + this.initStore.size() + " messages.");
+                        if (this.initStore.size() >= getFaultyCount()) {
+                            o("ENOUGH INIT");
+                            sender.sendMessage(
+                                    new ProposeMessage(
+                                            this.sequenceNo,
+                                            DockerusAuto.getInstance().getNumber(),
+                                            DockerusAuto.getInstance().getNumber(),
+                                            Median.calculateMedian(this.initStore),
+                                            initStore
+                                    )
+                            );
+                            state = 1;  // we send da message.
+                        }
+                    } else {
+                        state = 1;
+                    }
+                }
+                if (state == 1 && !MessageQueue.proposeM.isEmpty() && verifyProposal((ProposeMessage) MessageQueue.proposeM.take())) {
+                    o("PrevoteMessage");
                     sender.sendMessage(
-                            new PrevoteMessage((int) System.currentTimeMillis() / sequencelength,
+                            new PrevoteMessage(this.sequenceNo,
                                     DockerusAuto.getInstance().getNumber(),
                                     DockerusAuto.getInstance().getNumber(), Median.calculateMedian(this.initStore)));
+                    state = 2;
                 }
-                if (!MessageQueue.prevoteM.isEmpty() && !prevoteDone) { //abfrage das die sequenznr stimmt fehlt
+                if (state == 2 && !MessageQueue.prevoteM.isEmpty()) { //abfrage das die sequenznr stimmt fehlt
+                    o("PrevoteMessage");
                     prevoteStore.add((PrevoteMessage) MessageQueue.prevoteM.take());
                     VerifyAgreementResult agreement = checkAgreement(prevoteStore);
                     if (agreement.bool) {
-                        sender.sendMessage(new VoteMessage((int) System.currentTimeMillis() / sequencelength,
+                        sender.sendMessage(new VoteMessage(this.sequenceNo,
                                 DockerusAuto.getInstance().getNumber(),
                                 DockerusAuto.getInstance().getNumber(), agreement.value));
-                        prevoteDone = true;
+                        state=3;
                     }
                 }
-                if (!MessageQueue.voteM.isEmpty()) {//abfrage dessen das der median bei genügend node gleich ist und sequenznr stimmt fehlt
+                if (state == 3 && !MessageQueue.voteM.isEmpty()) {//abfrage dessen das der median bei genügend node gleich ist und sequenznr stimmt fehlt
+                    o("VoteMessage");
                     voteStore.add((VoteMessage) MessageQueue.voteM.take());
                     VerifyAgreementResult agreement = checkAgreement(voteStore);
                     if (agreement.bool) {
                         return agreement.value;
                     }
+                } else {
+                    System.out.println("prewait, state: " + state + " YEAH!");
+                    this.r.wait(10000);  // waits for a new message to allow all 3 ifs to check, but otherwise block.
+                    System.out.println("postwait!");
                 }
             }
         }
@@ -166,5 +185,8 @@ public class NormalCase {
             this.bool = bool;
             this.value = value;
         }
+    }
+    static void o(String s) {
+        System.out.println(s);
     }
 }
