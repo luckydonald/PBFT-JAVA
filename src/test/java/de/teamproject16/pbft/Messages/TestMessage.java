@@ -3,7 +3,7 @@ package de.teamproject16.pbft.Messages;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static de.teamproject16.pbft.Messages.Types.PROPOSE;
@@ -75,17 +75,17 @@ public class TestMessage {
 
     @Test
     public void testmedian() throws Exception{
-        List<InitMessage> initStore;
-        String init1 = "\"{\"node\": 2, \"value\": 0.4, \"type\": 1, \"sequence_no\": 1}";
-        String init2 = "{\"node\": 1, \"value\": 0.6, \"type\": 1, \"sequence_no\": 1}";
-        String init3 = "{\"node\": 3, \"value\": 0.3, \"type\": 1, \"sequence_no\": 1}";
-        String init4 = "{\"node\": 4, \"value\": 0.3, \"type\": 1, \"sequence_no\": 1}";
-        InitMessage init = new InitMessage();
+        List<InitMessage> initStore = new LinkedList<>();
+        InitMessage init1 = new InitMessage(1,1,0.4);
+        InitMessage init2 = new InitMessage(1,2,0.3);
+        InitMessage init3 = new InitMessage(1,3,0.3);
+        InitMessage init4 = new InitMessage(1,4,0.5);
+        initStore.add(init1);
+        initStore.add(init2);
+        initStore.add(init3);
+        initStore.add(init4);
+        assertEquals(0.4, Median.calculateMedian(initStore), 0);
 
     }
 
-    @Test
-    public void testAgreementResult() throws Exception{
-        ArrayList<Message> store = new ArrayList<>();
-    }
 }
