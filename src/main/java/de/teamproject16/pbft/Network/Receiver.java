@@ -173,14 +173,16 @@ public class Receiver extends Thread {
     }
 
     public void addMessage(String json) {
-        try {
-            JSONObject data = new JSONObject(json);
-            MessageQueue.messageQueue(Message.messageConvert(data));
-        } catch (JSONException e) {
-            System.out.println("Convert the String to JSONObject failed.");
-            e.printStackTrace();
+        synchronized (this) {
+            try {
+                JSONObject data = new JSONObject(json);
+                MessageQueue.messageQueue(Message.messageConvert(data));
+            } catch (JSONException e) {
+                System.out.println("Convert the String to JSONObject failed.");
+                e.printStackTrace();
+            }
+            this.notifyAll();  // In case someone is waiting for new messages.
         }
-        this.notifyAll();  // In case someone is waiting for new messages.
     }
 
 }

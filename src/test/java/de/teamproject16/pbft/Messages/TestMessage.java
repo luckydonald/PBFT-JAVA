@@ -1,4 +1,5 @@
-import de.teamproject16.pbft.Messages.*;
+package de.teamproject16.pbft.Messages;
+
 import org.json.JSONObject;
 import org.junit.Test;
 

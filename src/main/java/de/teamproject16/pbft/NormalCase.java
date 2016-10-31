@@ -7,6 +7,7 @@ import de.teamproject16.pbft.Messages.*;
 import de.teamproject16.pbft.Network.MessageQueue;
 import de.teamproject16.pbft.Network.Receiver;
 import de.teamproject16.pbft.Network.Sender;
+import org.json.JSONException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class NormalCase {
 
     ArrayList<InitMessage> initStore = null;
     Receiver r = null;
-    private int sequenceNo;
+    private long sequenceNo;
 
     public NormalCase(Receiver receiver) {
         this.r = receiver;
@@ -34,7 +35,7 @@ public class NormalCase {
      * @throws UnsupportedEncodingException
      * @throws DockerCertificateException
      */
-    public double normalFunction() throws DockerException, InterruptedException, UnsupportedEncodingException, DockerCertificateException {
+    public double normalFunction() throws DockerException, InterruptedException, UnsupportedEncodingException, DockerCertificateException, JSONException {
         Sender sender = new Sender();
         initStore = new ArrayList<>();
 
@@ -42,7 +43,6 @@ public class NormalCase {
 
         if(this.leader == DockerusAuto.getInstance().getNumber()){
             if(this.initStore.size() >= getFaultyCount()){
-
                 sender.sendMessage(
                         new ProposeMessage(
                                 (int) System.currentTimeMillis()/sequencelength,
@@ -58,29 +58,30 @@ public class NormalCase {
             ArrayList<Message> voteStore = new ArrayList<>();
             boolean prevoteDone = false;
             while(true){
-                this.r.wait();  // waits for a new message to allow all 3 ifs to check, but otherwise block.
-
-                if(!MessageQueue.proposeM.isEmpty() && verifyProposal((ProposeMessage) MessageQueue.proposeM.take())){
-                    sender.sendMessage(
-                            new PrevoteMessage((int) System.currentTimeMillis()/sequencelength,
-                            DockerusAuto.getInstance().getNumber(),
-                            DockerusAuto.getInstance().getNumber(), Median.calculateMedian(this.initStore)));
-                }
-                if(!MessageQueue.prevoteM.isEmpty() && !prevoteDone){ //abfrage das die sequenznr stimmt fehlt
-                    prevotStore.add((PrevoteMessage) MessageQueue.prevoteM.take());
-                    VerifyAgreementResult agreement = checkAgreement(prevotStore);
-                    if(agreement.bool){
-                    sender.sendMessage(new VoteMessage((int) System.currentTimeMillis()/sequencelength,
-                            DockerusAuto.getInstance().getNumber(),
-                            DockerusAuto.getInstance().getNumber(), agreement.value));
-                        prevoteDone = true;
+                synchronized (this.r) {
+                    this.r.wait();  // waits for a new message to allow all 3 ifs to check, but otherwise block.
+                    if (!MessageQueue.proposeM.isEmpty() && verifyProposal((ProposeMessage) MessageQueue.proposeM.take())) {
+                        sender.sendMessage(
+                                new PrevoteMessage((int) System.currentTimeMillis() / sequencelength,
+                                        DockerusAuto.getInstance().getNumber(),
+                                        DockerusAuto.getInstance().getNumber(), Median.calculateMedian(this.initStore)));
                     }
-                }
-                if(!MessageQueue.voteM.isEmpty()){//abfrage dessen das der median bei genügend node gleich ist und sequenznr stimmt fehlt
-                    voteStore.add((VoteMessage) MessageQueue.voteM.take());
-                    VerifyAgreementResult agreement = checkAgreement(prevotStore);
-                    if(agreement.bool){
-                        return agreement.value;
+                    if (!MessageQueue.prevoteM.isEmpty() && !prevoteDone) { //abfrage das die sequenznr stimmt fehlt
+                        prevotStore.add((PrevoteMessage) MessageQueue.prevoteM.take());
+                        VerifyAgreementResult agreement = checkAgreement(prevotStore);
+                        if (agreement.bool) {
+                            sender.sendMessage(new VoteMessage((int) System.currentTimeMillis() / sequencelength,
+                                    DockerusAuto.getInstance().getNumber(),
+                                    DockerusAuto.getInstance().getNumber(), agreement.value));
+                            prevoteDone = true;
+                        }
+                    }
+                    if (!MessageQueue.voteM.isEmpty()) {//abfrage dessen das der median bei genügend node gleich ist und sequenznr stimmt fehlt
+                        voteStore.add((VoteMessage) MessageQueue.voteM.take());
+                        VerifyAgreementResult agreement = checkAgreement(voteStore);
+                        if (agreement.bool) {
+                            return agreement.value;
+                        }
                     }
                 }
             }
@@ -115,7 +116,7 @@ public class NormalCase {
                     count++;
                 }
             }
-            if (count >= ((DockerusAuto.getInstance().getHostnames(true).size() + getFaultyCount())/2)){
+            if (count >= ((DockerusAuto.getInstance().getHostnames(false).size() + getFaultyCount())/2)){
                 return new VerifyAgreementResult(true, value);
             }
         }
@@ -140,7 +141,7 @@ public class NormalCase {
      * @throws InterruptedException
      */
     public double getFaultyCount() throws DockerException, InterruptedException {
-        return (DockerusAuto.getInstance().getHostnames(true).size() -  1)/3;
+        return (DockerusAuto.getInstance().getHostnames(false).size() -  1)/3;
     }
 
     /**
@@ -151,7 +152,7 @@ public class NormalCase {
             this.initStore.clear();
             this.initStore = null;
         }
-        this.sequenceNo = (int) System.currentTimeMillis()/sequencelength;
+        this.sequenceNo = (System.currentTimeMillis() / sequencelength);
     }
 
 

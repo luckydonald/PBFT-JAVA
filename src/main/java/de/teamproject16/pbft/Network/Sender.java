@@ -4,6 +4,7 @@ import com.spotify.docker.client.DockerCertificateException;
 import com.spotify.docker.client.DockerException;
 import de.luckydonald.utils.dockerus.DockerusAuto;
 import de.teamproject16.pbft.Messages.Message;
+import org.json.JSONException;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -26,8 +27,10 @@ public class Sender {
      * @throws DockerException
      * @throws DockerCertificateException
      */
-    public void sendMessage(Message msg) throws UnsupportedEncodingException, InterruptedException, DockerException, DockerCertificateException {
-        broadcast(msg.toString());
+    public void sendMessage(Message msg) throws UnsupportedEncodingException, InterruptedException, DockerException, DockerCertificateException, JSONException {
+        String json = msg.messageEncode().toString();
+        broadcast(json);
+        DatabaseDumper.send(json);
     }
 
     /**

@@ -23,18 +23,4 @@ public class Median {
         int calculate = floatStore.size()/2;
         return floatStore.get(calculate);
     }
-/*
-    public static void simulate(int count){
-        for(int i = 0; i<count; i++){
-            double v = Math.random()*10;
-            value.add(v);
-        }
-    }
-
-    public static void main (String[] args){
-        simulate(4);
-        System.out.println(value);
-        System.out.println(calculateMedian());
-    }
-    */
 }
