@@ -7,10 +7,12 @@ import de.teamproject16.pbft.Messages.*;
 import de.teamproject16.pbft.Network.MessageQueue;
 import de.teamproject16.pbft.Network.Receiver;
 import de.teamproject16.pbft.Network.Sender;
+import jnr.ffi.annotations.In;
 import org.json.JSONException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -165,7 +167,17 @@ public class NormalCase {
         int roundNumber;
         double prevoteValue;
         for (LeaderChangeMessage msg : leaderChangeMessageList) {
-            Map<Double, List<PrevoteMessage>> tmp = msg.prevoteList.stream().collect(Collectors.groupingBy(prev_msg -> prev_msg.value));
+            Map<Integer, List<PrevoteMessage>> tmp = msg.prevoteList.stream().collect(Collectors.groupingBy(prev_msg -> prev_msg.leader));
+            // leader: [PrevoteMessage, PrevoteMessage, PrevoteMessage]
+            for (Integer leader : tmp.keySet()) {
+                Map<Double, Integer> count_map = new HashMap<>();
+                //Map<Double, Integer> tmp2 = tmp.get(leader).stream().flatMapToLong();
+                // value: [PrevoteMessage, PrevoteMessage, PrevoteMessage]
+                //for (Double value : tmp2.keySet()) {
+                //    count =
+                //}
+
+            }
             // value: list of messages
             for (PrevoteMessage pre : msg.prevoteList) {
 
