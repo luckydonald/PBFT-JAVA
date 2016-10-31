@@ -1,4 +1,4 @@
-package de.teamproject16.pbft.Network;
+package de.teamproject16.pbft.Network.Database;
 
 import de.luckydonald.utils.ObjectWithLogger;
 
@@ -15,7 +15,7 @@ import java.net.URL;
  * @author luckydonald
  * @since 31.10.2016
  **/
-public class DatabaseDumper extends ObjectWithLogger {
+public class Dumper extends ObjectWithLogger {
     public static void send(String json) {
         try {
             URL url = new URL("http://api/dump/"); // TODO: env

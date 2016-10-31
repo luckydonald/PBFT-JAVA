@@ -1,6 +1,9 @@
 package de.teamproject16.pbft.Messages;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 import static de.teamproject16.pbft.Messages.Types.LEADER_CHANGE;
 
 /**
@@ -8,15 +11,15 @@ import static de.teamproject16.pbft.Messages.Types.LEADER_CHANGE;
  */
 public class LeaderChangeMessage extends Message {
 
-    Number node_num;
-    Number leader;
-    Number P;
+    public int node;
+    public int leader;
+    public ArrayList<PrevoteMessage> prevoteList;
 
-    public LeaderChangeMessage(long sequence_no, Number node_num, Number leader, Number P) {
+    public LeaderChangeMessage(long sequence_no, int node, int leader, ArrayList<PrevoteMessage> prevoteList) {
         super(LEADER_CHANGE, sequence_no);
-        this.node_num = node_num;
+        this.node = node;
         this.leader = leader;
-        this.P = P;
+        this.prevoteList = prevoteList;
     }
 
     public static LeaderChangeMessage messageDecipher(JSONObject data) {
