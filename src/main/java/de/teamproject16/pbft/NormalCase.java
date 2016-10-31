@@ -41,11 +41,11 @@ public class NormalCase {
 
         sender.sendMessage(new InitMessage(this.sequenceNo, DockerusAuto.getInstance().getNumber(), ToDO.getSensorValue()));  //UNixtimestampe
 
-        if(this.leader == DockerusAuto.getInstance().getNumber()){
-            if(this.initStore.size() >= getFaultyCount()){
+        if(this.leader == DockerusAuto.getInstance().getNumber()) {
+            if (this.initStore.size() >= getFaultyCount()) {
                 sender.sendMessage(
                         new ProposeMessage(
-                                (int) System.currentTimeMillis()/sequencelength,
+                                (int) System.currentTimeMillis() / sequencelength,
                                 DockerusAuto.getInstance().getNumber(),
                                 DockerusAuto.getInstance().getNumber(),
                                 Median.calculateMedian(this.initStore),
@@ -53,40 +53,39 @@ public class NormalCase {
                         )
                 );
             }
+        }
 
-            ArrayList<Message> prevotStore = new ArrayList<>();
-            ArrayList<Message> voteStore = new ArrayList<>();
-            boolean prevoteDone = false;
-            while(true){
-                synchronized (this.r) {
-                    this.r.wait();  // waits for a new message to allow all 3 ifs to check, but otherwise block.
-                    if (!MessageQueue.proposeM.isEmpty() && verifyProposal((ProposeMessage) MessageQueue.proposeM.take())) {
-                        sender.sendMessage(
-                                new PrevoteMessage((int) System.currentTimeMillis() / sequencelength,
-                                        DockerusAuto.getInstance().getNumber(),
-                                        DockerusAuto.getInstance().getNumber(), Median.calculateMedian(this.initStore)));
-                    }
-                    if (!MessageQueue.prevoteM.isEmpty() && !prevoteDone) { //abfrage das die sequenznr stimmt fehlt
-                        prevotStore.add((PrevoteMessage) MessageQueue.prevoteM.take());
-                        VerifyAgreementResult agreement = checkAgreement(prevotStore);
-                        if (agreement.bool) {
-                            sender.sendMessage(new VoteMessage((int) System.currentTimeMillis() / sequencelength,
+        ArrayList<Message> prevoteStore = new ArrayList<>();
+        ArrayList<Message> voteStore = new ArrayList<>();
+        boolean prevoteDone = false;
+        while(true){
+            synchronized (this.r) {
+                this.r.wait();  // waits for a new message to allow all 3 ifs to check, but otherwise block.
+                if (!MessageQueue.proposeM.isEmpty() && verifyProposal((ProposeMessage) MessageQueue.proposeM.take())) {
+                    sender.sendMessage(
+                            new PrevoteMessage((int) System.currentTimeMillis() / sequencelength,
                                     DockerusAuto.getInstance().getNumber(),
-                                    DockerusAuto.getInstance().getNumber(), agreement.value));
-                            prevoteDone = true;
-                        }
+                                    DockerusAuto.getInstance().getNumber(), Median.calculateMedian(this.initStore)));
+                }
+                if (!MessageQueue.prevoteM.isEmpty() && !prevoteDone) { //abfrage das die sequenznr stimmt fehlt
+                    prevoteStore.add((PrevoteMessage) MessageQueue.prevoteM.take());
+                    VerifyAgreementResult agreement = checkAgreement(prevoteStore);
+                    if (agreement.bool) {
+                        sender.sendMessage(new VoteMessage((int) System.currentTimeMillis() / sequencelength,
+                                DockerusAuto.getInstance().getNumber(),
+                                DockerusAuto.getInstance().getNumber(), agreement.value));
+                        prevoteDone = true;
                     }
-                    if (!MessageQueue.voteM.isEmpty()) {//abfrage dessen das der median bei genügend node gleich ist und sequenznr stimmt fehlt
-                        voteStore.add((VoteMessage) MessageQueue.voteM.take());
-                        VerifyAgreementResult agreement = checkAgreement(voteStore);
-                        if (agreement.bool) {
-                            return agreement.value;
-                        }
+                }
+                if (!MessageQueue.voteM.isEmpty()) {//abfrage dessen das der median bei genügend node gleich ist und sequenznr stimmt fehlt
+                    voteStore.add((VoteMessage) MessageQueue.voteM.take());
+                    VerifyAgreementResult agreement = checkAgreement(voteStore);
+                    if (agreement.bool) {
+                        return agreement.value;
                     }
                 }
             }
         }
-        return 0;
     }
 
     /**
