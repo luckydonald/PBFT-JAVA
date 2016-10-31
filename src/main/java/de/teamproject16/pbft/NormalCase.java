@@ -98,7 +98,7 @@ public class NormalCase {
      * @throws UnsupportedEncodingException
      * @throws DockerCertificateException
      */
-    private VerifyAgreementResult checkAgreement(ArrayList<Message> store) throws DockerException, InterruptedException, UnsupportedEncodingException, DockerCertificateException {
+    public VerifyAgreementResult checkAgreement(ArrayList<Message> store) throws DockerException, InterruptedException, UnsupportedEncodingException, DockerCertificateException {
         double value = 0.0;
         for (Message e : store){
             if (e instanceof PrevoteMessage) {
@@ -157,11 +157,11 @@ public class NormalCase {
 
 
     /**
-     * A class for return tupel in java.
+     * A class for return tuple in java.
      */
     class VerifyAgreementResult {
-        private final double value;
-        private final boolean bool;
+        public final double value;
+        public final boolean bool;
 
         public VerifyAgreementResult(boolean bool, double value) {
             this.bool = bool;
