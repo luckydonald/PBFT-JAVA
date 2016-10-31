@@ -3,15 +3,9 @@ package de.teamproject16.pbft.Messages;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import static de.teamproject16.pbft.Messages.Types.PROPOSE;
-import de.teamproject16.pbft.NormalCase;
-
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Created by IngridBoldt on 24.10.16.
@@ -63,19 +57,4 @@ public class TestMessage {
         assertEquals("VoteMessage messageEncode()", jsonObj.toString(), te.messageEncode().toString());
     }
 
-    @Test
-    public void testVerifyProposal() throws Exception{
-        String json = "{\"type\": "+ PROPOSE + ", \"sequence_no\": 3, \"node\": 1, " +
-                "\"leader\": 2, \"proposal\": 3.5, \"value_store\": [" +
-                "{\"node\": 2, \"value\": 0.4, \"type\": 1, \"sequence_no\": 1}, " +
-                "{\"node\": 1, \"value\": 0.6, \"type\": 1, \"sequence_no\": 1}, " +
-                "{\"node\": 3, \"value\": 0.3, \"type\": 1, \"sequence_no\": 1}, " +
-                "{\"node\": 4, \"value\": 0.3, \"type\": 1, \"sequence_no\": 1}" +
-                "]}";
-        JSONObject jsonObj = new JSONObject(json);
-        ProposeMessage te = (ProposeMessage) Message.messageConvert(jsonObj);
-        assertEquals("VerifyProposal instance", NormalCase.verifyProposal(te), false);
-        assertEquals("VerifyProposal messageEncode()", jsonObj.toString(), te.messageEncode().toString());
-
-    }
 }
