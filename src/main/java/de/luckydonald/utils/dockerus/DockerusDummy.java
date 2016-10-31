@@ -25,7 +25,7 @@ public class DockerusDummy extends Dockerus{
     }
 
     @Override
-    public List<String> getHostnames(Boolean excludeSelf) throws DockerException, InterruptedException {
+    public List<String> getHostnames(boolean excludeSelf) throws DockerException, InterruptedException {
         List<String> foo = new ArrayList<>();
         foo.add("localhost");
         return foo;

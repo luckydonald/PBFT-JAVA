@@ -86,29 +86,38 @@ public class Dockerus {
     }
 
     public List<Container> getContainers(boolean excludeSelf) throws DockerException, InterruptedException {
+        Container me = me();
         return this.getCLI().listContainers(
-                DockerClient.ListContainersParam.withLabel(this.LABEL_COMPOSE_PROJECT, this.getProject()),
-                DockerClient.ListContainersParam.withLabel(this.LABEL_COMPOSE_SERVICE, this.getService())
-        ).stream().filter(c -> !excludeSelf || this.filterIsIdEqualHostname(c)).collect(Collectors.toList());
+                DockerClient.ListContainersParam.withLabel(this.LABEL_COMPOSE_PROJECT, this.getProject(me)),
+                DockerClient.ListContainersParam.withLabel(this.LABEL_COMPOSE_SERVICE, this.getService(me))
+        ).stream()
+                .filter(c -> !excludeSelf || this.filterIsIdEqualHostname(c))
+                .filter(c -> { try {
+                    return this.getService(me).equals(c.labels().get(this.LABEL_COMPOSE_SERVICE));
+                } catch (InterruptedException | DockerException e) {return false;}})
+                //.filter(this::output)
+                .collect(Collectors.toList());
     }
 
-    @CacheResult
     public String getHostname() throws DockerException, InterruptedException {
         return this.getHostname(this.me());
     }
 
-    @CacheResult
     String getHostname(Container container) throws DockerException, InterruptedException {
         return "" + this.getProject(container) + "_" + this.getService(container) + "_" + this.getNumber(container);
     }
 
-    @CacheResult
-    public List<String> getHostnames(Boolean excludeSelf) throws DockerException, InterruptedException {
+    public List<String> getHostnames(boolean excludeSelf) throws DockerException, InterruptedException {
         return this.getContainers(excludeSelf).stream().map(c -> { try { return this.getHostname(c); } catch (InterruptedException | DockerException e) { e.printStackTrace(); return null; } }).filter(c -> c != null).collect(Collectors.toList());
         // #java_sucks  http://stackoverflow.com/a/19757456/3423324
     }
 
     boolean filterIsIdEqualHostname(Container c) {
         return c.id().substring(0, 12).equals(this.getEnvHostname().substring(0, 12));
+    }
+
+    boolean output(Object o) {
+        System.out.println("LIST STREAM ELEMENT: " + o.toString());
+        return true;
     }
 }
