@@ -6,6 +6,7 @@ import org.junit.Test;
 import static de.teamproject16.pbft.Messages.Types.PROPOSE;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by IngridBoldt on 24.10.16.
@@ -56,5 +57,4 @@ public class TestMessage {
         assertThat("VoteMessage instance", te, instanceOf(VoteMessage.class));
         assertEquals("VoteMessage messageEncode()", jsonObj.toString(), te.messageEncode().toString());
     }
-
 }
