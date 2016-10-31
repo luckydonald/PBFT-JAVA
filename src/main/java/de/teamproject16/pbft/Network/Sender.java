@@ -29,13 +29,8 @@ public class Sender {
      */
     public void sendMessage(Message msg) throws UnsupportedEncodingException, InterruptedException, DockerException, DockerCertificateException, JSONException {
         String json = msg.messageEncode().toString();
-        boolean done = false;
-        while (!done) {
-            System.out.println("SENDING: " + json);
-            broadcast(json);
-            DatabaseDumper.send(json);
-            done = true;
-        }
+        broadcast(json);
+        DatabaseDumper.send(json);
     }
 
     /**
@@ -55,7 +50,6 @@ public class Sender {
             Boolean sent = false;
             while(!sent){
                 try {
-                    System.out.println("Sending to " + nodeHost + ":4458.");
                     Socket socket = new Socket(nodeHost, 4458);  //open a socket port 4458, and the nodeHost names of the other hosts
                     DataOutputStream dataStream = new DataOutputStream(socket.getOutputStream()); //to send messages
                     dataStream.write(msgBytes); //write the messages at the datastream
