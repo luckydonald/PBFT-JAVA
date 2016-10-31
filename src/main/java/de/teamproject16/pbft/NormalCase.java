@@ -59,7 +59,6 @@ public class NormalCase {
             boolean prevoteDone = false;
             while(true){
                 this.r.wait();  // waits for a new message to allow all 3 ifs to check, but otherwise block.
-
                 if(!MessageQueue.proposeM.isEmpty() && verifyProposal((ProposeMessage) MessageQueue.proposeM.take())){
                     sender.sendMessage(
                             new PrevoteMessage((int) System.currentTimeMillis()/sequencelength,
@@ -127,7 +126,7 @@ public class NormalCase {
      * @return
      * @throws InterruptedException
      */
-    public boolean verifyProposal(ProposeMessage msg) throws InterruptedException {
+    public static boolean verifyProposal(ProposeMessage msg) throws InterruptedException {
         double medianS = Median.calculateMedian(msg.value_store);
         return msg.proposal == medianS;
         //fragen nach gleicher sequenznr. und warum tun wir das nicht beim initstore noch mal?
