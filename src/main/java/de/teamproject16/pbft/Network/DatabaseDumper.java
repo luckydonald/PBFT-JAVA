@@ -18,7 +18,7 @@ import java.net.URL;
 public class DatabaseDumper extends ObjectWithLogger {
     public static void send(String json) {
         try {
-            URL url = new URL("http://api/"); // TODO: env
+            URL url = new URL("http://api/dump/"); // TODO: env
             HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
             httpCon.setDoOutput(true);
             httpCon.setRequestMethod("PUT");

@@ -29,7 +29,7 @@ public class Main {
         while(true) {
             System.out.println("### STARTING ROUND ###");
             double result = algo.normalFunction();
-            System.out.println(result);
+            System.out.println("### RESULT: " + result);
         }
 
 
