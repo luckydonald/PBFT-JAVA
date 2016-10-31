@@ -4,6 +4,6 @@ services:
     build: .
     environment:
       NODE_PORT: 4458
-    command: ["-agentlib:jdwp=transport=dt_socket,server=n,address=134.169.252.103:5005,suspend=y,onthrow=<FQ exception class name>,onuncaught=<y/n>"]
+    command: ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"]
     # restart: "unless-stopped"
     # stdin_open: true
