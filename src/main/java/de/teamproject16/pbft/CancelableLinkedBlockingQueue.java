@@ -43,7 +43,6 @@ public class CancelableLinkedBlockingQueue<T> extends LinkedBlockingQueue<T> {
     /**
      * Inserts the specified element at the tail of this queue, waiting if
      * necessary for space to become available.
-     *
      * @param element Element to append.
      * @throws InterruptedException {@inheritDoc}
      * @throws NullPointerException {@inheritDoc}

@@ -56,7 +56,6 @@ public class Message {
         int type = 0;
         try {
             type = data.getInt("type");
-            System.out.println(type);
         } catch (JSONException e) {
             e.printStackTrace();
         }

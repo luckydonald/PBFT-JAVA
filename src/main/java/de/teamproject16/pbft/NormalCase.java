@@ -7,7 +7,6 @@ import de.teamproject16.pbft.Messages.*;
 import de.teamproject16.pbft.Network.MessageQueue;
 import de.teamproject16.pbft.Network.Receiver;
 import de.teamproject16.pbft.Network.Sender;
-import org.json.JSONException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -128,7 +127,7 @@ public class NormalCase {
      * @return
      * @throws InterruptedException
      */
-    public boolean verifyProposal(ProposeMessage msg) throws InterruptedException {
+    public static boolean verifyProposal(ProposeMessage msg) throws InterruptedException {
         double medianS = Median.calculateMedian(msg.value_store);
         return msg.proposal == medianS;
         //fragen nach gleicher sequenznr. und warum tun wir das nicht beim initstore noch mal?
