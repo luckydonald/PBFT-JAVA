@@ -1,5 +1,7 @@
 package de.teamproject16.pbft;
 
+import de.luckydonald.utils.dockerus.DockerusAuto;
+import de.luckydonald.utils.dockerus.DockerusDummy;
 import de.teamproject16.pbft.Messages.Message;
 import de.teamproject16.pbft.Messages.PrevoteMessage;
 import de.teamproject16.pbft.Messages.ProposeMessage;
@@ -44,6 +46,10 @@ public class NormalCaseTest {
         store.add(pm4);
         NormalCase normalCase = new NormalCase(new Receiver());
         NormalCase.VerifyAgreementResult lol = normalCase.checkAgreement(store);
+        if (DockerusAuto.getInstance() instanceof DockerusDummy) {
+            ((DockerusDummy) DockerusAuto.getInstance()).setTotal(4);
+        }
+
         assertEquals("checkAgreement", lol.bool, true);
         assertEquals(0.3, lol.value, 0.0);
     }

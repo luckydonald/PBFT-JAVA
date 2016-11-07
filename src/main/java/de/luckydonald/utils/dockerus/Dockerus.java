@@ -6,8 +6,6 @@ import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.messages.Container;
 
-
-import javax.cache.annotation.CacheResult;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -97,6 +95,14 @@ public class Dockerus {
                 } catch (InterruptedException | DockerException e) {return false;}})
                 //.filter(this::output)
                 .collect(Collectors.toList());
+    }
+
+    public int getTotal(boolean excludeSelf) {
+        try {
+            return this.getContainers(false).size();
+        } catch (DockerException | InterruptedException e) {
+            return 0;
+        }
     }
 
     public String getHostname() throws DockerException, InterruptedException {
