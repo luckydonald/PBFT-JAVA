@@ -45,7 +45,18 @@ public class NormalCase {
      */
     public double normalFunction() throws DockerException, InterruptedException, UnsupportedEncodingException, DockerCertificateException, JSONException {
         this.initStore = new ArrayList<>();
-        this.sequenceNo = (int) System.currentTimeMillis() / sequencelength;
+        long newSeq = calculateSequenceNumber();
+        if (this.sequenceNo >= newSeq) {
+            o("Sequence number is equal. Old " + this.sequenceNo + " and new " + newSeq);
+        }
+        while (this.sequenceNo >= newSeq) {
+            synchronized (this) {
+                this.wait((long)((sequencelength/10)-1));
+                newSeq = calculateSequenceNumber();
+            }
+        }
+        o("Changed sequence " + this.sequenceNo + " to " + newSeq);
+        this.sequenceNo = newSeq;
         System.out.println("NODE ID: " + getNumber() + " SEQ_NO: " + sequenceNo);
 
         sender.sendMessage(new InitMessage(this.sequenceNo, getNumber(), ToDO.getSensorValue()));
@@ -56,13 +67,13 @@ public class NormalCase {
         while(true){
             synchronized (this.r) {
                 if(!MessageQueue.initM.isEmpty()) {
-                    System.out.println("InitMessage!");
+                    System.out.println("Got InitMessage");
                     this.initStore.add((InitMessage) MessageQueue.initM.take());
                 }
                 if(state == 0) {
                     if(this.leader == getNumber()) {  // are we the leader?
                         System.out.println("LEADER! Got " + this.initStore.size() + " messages.");
-                        if (this.initStore.size() >= getFaultyNodeCount()) {
+                        if (this.initStore.size() >= (getTotalNodeCount() - getFaultyNodeCount())) {  // <---
                             o("ENOUGH INIT");
                             sender.sendMessage(
                                     new ProposeMessage(
@@ -74,22 +85,25 @@ public class NormalCase {
                                     )
                             );
                             state = 1;  // we send da message.
+                            o("state = 1");
                         }
                     } else {
                         state = 1;
+                        o("state = 1");
                     }
                 }
                 if (state == 1 && !MessageQueue.proposeM.isEmpty() && verifyProposal((ProposeMessage) MessageQueue.proposeM.take())) {
-                    o("PrevoteMessage");
+                    o("Got ProposeMessage");
                     sender.sendMessage(
                             new PrevoteMessage(
                                     this.sequenceNo, getNumber(), this.leader, Median.calculateMedian(this.initStore)
                             )
                     );
                     state = 2;
+                    o("state = 2");
                 }
                 if (state == 2 && !MessageQueue.prevoteM.isEmpty()) { //abfrage das die sequenznr stimmt fehlt
-                    o("PrevoteMessage");
+                    o("Got PrevoteMessage");
                     prevoteStore.add((PrevoteMessage) MessageQueue.prevoteM.take());
                     VerifyAgreementResult agreement = checkAgreement(prevoteStore.stream().collect(Collectors.toList()));
                     if (agreement.bool) {
@@ -97,13 +111,18 @@ public class NormalCase {
                                 getNumber(),
                                 this.leader, agreement.value));
                         state=3;
+                        o("state = "+ state);
+                    } else {
+                        o("checkAgreement failed.");
                     }
                 }
-                if (state == 3 && !MessageQueue.voteM.isEmpty()) {//abfrage dessen das der median bei genügend node gleich ist und sequenznr stimmt fehlt
-                    o("VoteMessage");
+                if ((state == 2 || state == 3) && !MessageQueue.voteM.isEmpty()) {//abfrage dessen das der median bei genügend node gleich ist und sequenznr stimmt fehlt
+                    o("Got VoteMessage");
                     voteStore.add((VoteMessage) MessageQueue.voteM.take());
                     VerifyAgreementResult agreement = checkAgreement(voteStore);
                     if (agreement.bool) {
+                        o("state = DONE! (now doing cleanup)");
+                        this.cleanUp();
                         return agreement.value;
                     }
                 } else {
@@ -111,6 +130,10 @@ public class NormalCase {
                 }
             }
         }
+    }
+
+    public long calculateSequenceNumber() {
+        return System.currentTimeMillis() / sequencelength;
     }
 
     /**
@@ -232,6 +255,7 @@ public class NormalCase {
     public double getFaultyNodeCount() throws DockerException, InterruptedException {
         return (this.getTotalNodeCount() -  1)/3;
     }
+
     /**
      * Retrieves the total amount of nodes.
      *
@@ -255,7 +279,7 @@ public class NormalCase {
             this.prevoteStore.clear();
             this.prevoteStore = null;
         }
-        this.sequenceNo = (System.currentTimeMillis() / sequencelength);
+        this.sequenceNo = calculateSequenceNumber();
     }
 
 

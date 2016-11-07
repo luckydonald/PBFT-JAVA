@@ -41,6 +41,7 @@ public class Main {
         while(true) {
             System.out.println("### STARTING ROUND ###");
             double result = algo.normalFunction();
+            algo.cleanUp();
             System.out.println("### RESULT: " + result);
         }
 
