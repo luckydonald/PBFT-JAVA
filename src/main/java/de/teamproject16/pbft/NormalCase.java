@@ -12,12 +12,10 @@ import org.json.JSONException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
-/**
- * Created by IngridBoldt on 26.10.16.
- */
+import static de.luckydonald.utils.Streams.toArrayList;
+import static java.util.stream.Collectors.groupingBy;
+
 public class NormalCase {
     public int sequencelength = 10000;
 
@@ -44,7 +42,7 @@ public class NormalCase {
      * @throws DockerCertificateException
      */
     public double normalFunction() throws DockerException, InterruptedException, UnsupportedEncodingException, DockerCertificateException, JSONException {
-        this.initStore = new ArrayList<>();
+        cleanUp();
         long newSeq = calculateSequenceNumber();
         if (this.sequenceNo >= newSeq) {
             o("Sequence number is equal. Old " + this.sequenceNo + " and new " + newSeq);
@@ -60,7 +58,7 @@ public class NormalCase {
         System.out.println("NODE ID: " + getNumber() + " SEQ_NO: " + sequenceNo);
 
         sender.sendMessage(new InitMessage(this.sequenceNo, getNumber(), ToDO.getSensorValue()));
-        prevoteStore = new ArrayList<>();
+        //prevoteStore = new ArrayList<>();
         ArrayList<Message> voteStore = new ArrayList<>();
         int state = 0;
         // prevoteDone = false;
@@ -105,7 +103,7 @@ public class NormalCase {
                 if (state == 2 && !MessageQueue.prevoteM.isEmpty()) { //abfrage das die sequenznr stimmt fehlt
                     o("Got PrevoteMessage");
                     prevoteStore.add((PrevoteMessage) MessageQueue.prevoteM.take());
-                    VerifyAgreementResult agreement = checkAgreement(prevoteStore.stream().collect(Collectors.toList()));
+                    VerifyAgreementResult agreement = checkAgreement(prevoteStore.stream().collect(toArrayList()));
                     if (agreement.bool) {
                         sender.sendMessage(new VoteMessage(this.sequenceNo,
                                 getNumber(),
@@ -190,7 +188,7 @@ public class NormalCase {
         int roundNumber;
         double prevoteValue;
         for (LeaderChangeMessage msg : leaderChangeMessageList) {
-            Map<Integer, List<PrevoteMessage>> tmp = msg.prevoteList.stream().collect(Collectors.groupingBy(prev_msg -> prev_msg.leader));
+            Map<Integer, List<PrevoteMessage>> tmp = msg.prevoteList.stream().collect(groupingBy(prev_msg -> prev_msg.leader));
             // leader: [PrevoteMessage, PrevoteMessage, PrevoteMessage]
             for (Integer leader : tmp.keySet()) {
                 Map<Double, Integer> count_map = new HashMap<>();
@@ -210,7 +208,7 @@ public class NormalCase {
     }
 
     public PrevoteMessage getMostValue(List<PrevoteMessage> list) {
-        return list.stream().sorted((a, b)->Double.compare(a.value, b.value)).collect(Collectors.groupingBy(m -> m.value)).entrySet().stream().reduce((l1, l2) -> l1.getValue().size() > l2.getValue().size() ? l1 : l2).get().getValue().stream().findAny().orElseGet(null);
+        return list.stream().sorted((a, b)->Double.compare(a.value, b.value)).collect(groupingBy(m -> m.value)).entrySet().stream().reduce((l1, l2) -> l1.getValue().size() > l2.getValue().size() ? l1 : l2).get().getValue().stream().findAny().orElseGet(null);
     }
 
     /**
@@ -271,16 +269,23 @@ public class NormalCase {
      * Clean the memory for a new sequence number.
      */
     public void cleanUp() {
+        this.sequenceNo = calculateSequenceNumber();
         if(this.initStore != null) {
-            this.initStore.clear();
-            this.initStore = null;
+            this.initStore = this.initStore.stream()
+                .filter(i-> i.sequence_no >= this.sequenceNo)
+                .collect(toArrayList());
+        } else {
+            this.initStore = new ArrayList<>();
         }
         if (this.prevoteStore != null) {
-            this.prevoteStore.clear();
-            this.prevoteStore = null;
+            this.prevoteStore = this.prevoteStore.stream()
+                .filter(i -> i.sequence_no >= this.sequenceNo)
+                .collect(toArrayList());
+        } else {
+            this.prevoteStore = new ArrayList<>();
         }
-        this.sequenceNo = calculateSequenceNumber();
     }
+
 
 
     /**
