@@ -1,5 +1,7 @@
 package de.teamproject16.pbft;
 
+import de.luckydonald.utils.dockerus.DockerusAuto;
+import de.luckydonald.utils.dockerus.DockerusDummy;
 import de.teamproject16.pbft.Messages.Message;
 import de.teamproject16.pbft.Messages.PrevoteMessage;
 import de.teamproject16.pbft.Messages.ProposeMessage;
@@ -44,8 +46,26 @@ public class NormalCaseTest {
         store.add(pm4);
         NormalCase normalCase = new NormalCase(new Receiver());
         NormalCase.VerifyAgreementResult lol = normalCase.checkAgreement(store);
+        if (DockerusAuto.getInstance() instanceof DockerusDummy) {
+            ((DockerusDummy) DockerusAuto.getInstance()).setTotal(4);
+        }
+
         assertEquals("checkAgreement", lol.bool, true);
         assertEquals(0.3, lol.value, 0.0);
+
+        ArrayList<Message> store1 = new ArrayList<>();
+        PrevoteMessage pM11 = new PrevoteMessage(3,1,2,0.3);
+        PrevoteMessage pM21 = new PrevoteMessage(3,2,2,0.4);
+        PrevoteMessage pm31 = new PrevoteMessage(3,3,2,0.2);
+        PrevoteMessage pm41 = new PrevoteMessage(3,4,2,0.3);
+        store1.add(pM11);
+        store1.add(pM21);
+        store1.add(pm31);
+        store1.add(pm41);
+        NormalCase normalCase1 = new NormalCase(new Receiver());
+        NormalCase.VerifyAgreementResult lol1 = normalCase1.checkAgreement(store1);
+        assertEquals("checkAgreement did agree", lol1.bool, false);
+        assertEquals(0.3, lol1.value, 0.0);
     }
 
 }

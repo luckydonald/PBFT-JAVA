@@ -100,4 +100,20 @@ public class DockerusDummy extends Dockerus{
     public List<Container> getContainers(boolean excludeSelf) throws DockerException, InterruptedException {
         throw new NotImplementedException("Project probably not loaded in docker-compose...");
     }
+    private int total = 0;
+
+    @Override
+    public int getTotal(boolean excludeSelf) {
+        return (excludeSelf ? total -1 : total);   // stored not excluded
+    }
+
+    public void setTotal(int total) {
+        this.setTotal(total, false);
+    }
+    public void setTotal(int total, boolean excludeSelf) {
+        if (excludeSelf) {
+            total++;  // store not excluded
+        }
+        this.total = total;
+    }
 }

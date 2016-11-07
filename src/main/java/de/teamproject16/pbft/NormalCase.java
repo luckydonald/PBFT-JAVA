@@ -240,7 +240,7 @@ public class NormalCase {
      * @throws InterruptedException
      */
     public double getTotalNodeCount() throws DockerException, InterruptedException {
-        return DockerusAuto.getInstance().getContainers(false).size();
+        return DockerusAuto.getInstance().getTotal(false);
     }
 
     /**
