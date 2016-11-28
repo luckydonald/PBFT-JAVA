@@ -7,11 +7,13 @@ import de.teamproject16.pbft.Messages.*;
 import de.teamproject16.pbft.Network.MessageQueue;
 import de.teamproject16.pbft.Network.Receiver;
 import de.teamproject16.pbft.Network.Sender;
-import jnr.ffi.annotations.In;
 import org.json.JSONException;
 
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static de.luckydonald.utils.Streams.toArrayList;
 import static java.util.stream.Collectors.groupingBy;
@@ -41,7 +43,7 @@ public class NormalCase {
      * @throws UnsupportedEncodingException
      * @throws DockerCertificateException
      */
-    public double normalFunction() throws DockerException, InterruptedException, UnsupportedEncodingException, DockerCertificateException, JSONException {
+    public double normalFunction() throws Exception {
         cleanUp();
         long newSeq = calculateSequenceNumber();
         if (this.sequenceNo >= newSeq) {
@@ -63,6 +65,9 @@ public class NormalCase {
         int state = 0;
         // prevoteDone = false;
         while(true){
+           if((System.currentTimeMillis()/sequencelength%10)+1 > this.sequenceNo%10){
+                throw new Exception("Timeout");
+            }
             synchronized (this.r) {
                 if(!MessageQueue.initM.isEmpty()) {
                     System.out.println("Got InitMessage");
@@ -124,7 +129,7 @@ public class NormalCase {
                         return agreement.value;
                     }
                 } else {
-                    this.r.wait();  // waits for a new message to allow all 3 ifs to check, but otherwise block.
+                    this.r.wait(1000);  // waits for a new message to allow all 3 ifs to check, but otherwise block.
                 }
             }
         }

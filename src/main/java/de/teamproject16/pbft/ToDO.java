@@ -5,6 +5,7 @@ package de.teamproject16.pbft;
  */
 public class ToDO {
     public static float getSensorValue (){
-        return (float) 0.5;
+        float random = (float) Math.random()*10;
+        return random;
     }
 }
