@@ -44,7 +44,8 @@ public class NormalCase {
      * @throws UnsupportedEncodingException
      * @throws DockerCertificateException
      */
-    public double normalFunction() throws Exception {
+    public double normalFunction() throws DockerException, InterruptedException, UnsupportedEncodingException,
+            DockerCertificateException, JSONException, TimeoutException {
         cleanUp();
         long newSeq = calculateSequenceNumber();
         if (this.sequenceNo >= newSeq) {
