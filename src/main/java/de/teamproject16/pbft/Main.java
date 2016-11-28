@@ -3,6 +3,7 @@ package de.teamproject16.pbft;
 import de.luckydonald.utils.dockerus.DockerusAuto;
 import de.teamproject16.pbft.Network.Receiver;
 
+import java.util.concurrent.TimeoutException;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -36,9 +37,15 @@ public class Main {
 
         while(true) {
             System.out.println("### STARTING ROUND ###");
-            double result = algo.normalFunction();
-            algo.cleanUp();
-            System.out.println("### RESULT: " + result);
+            try {
+                double result = algo.normalFunction();
+                System.out.println("### RESULT: " + result);
+            } catch (TimeoutException e) {
+                System.out.println("### Round Abort ###");
+            } finally {
+                algo.cleanUp();
+            }
+
         }
 
 

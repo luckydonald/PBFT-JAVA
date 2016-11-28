@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import static de.luckydonald.utils.Streams.toArrayList;
 import static java.util.stream.Collectors.groupingBy;
@@ -65,8 +66,8 @@ public class NormalCase {
         int state = 0;
         // prevoteDone = false;
         while(true){
-           if((System.currentTimeMillis()/sequencelength%10)+1 > this.sequenceNo%10){
-                throw new Exception("Timeout");
+           if((System.currentTimeMillis()/sequencelength) > this.sequenceNo){
+                throw new TimeoutException();
             }
             synchronized (this.r) {
                 if(!MessageQueue.initM.isEmpty()) {
