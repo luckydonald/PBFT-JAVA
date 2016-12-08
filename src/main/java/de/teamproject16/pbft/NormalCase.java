@@ -19,6 +19,10 @@ import java.util.concurrent.TimeoutException;
 import static de.luckydonald.utils.Streams.toArrayList;
 import static java.util.stream.Collectors.groupingBy;
 
+/**
+ * Created by TassoDübel und IngridBoldt
+ */
+
 public class NormalCase {
     public int sequencelength = 10000;
 
@@ -168,7 +172,7 @@ public class NormalCase {
                     count++;
                 }
             }
-            if (count >= muchMoreThenHalf()){
+            if (count > muchMoreThenHalf()){
                 return new VerifyAgreementResult(true, value);
             }
         }
@@ -176,6 +180,7 @@ public class NormalCase {
     }
 
     double muchMoreThenHalf() throws DockerException, InterruptedException {
+        //System.out.println((this.getTotalNodeCount() + getFaultyNodeCount())/2);
         return (this.getTotalNodeCount() + getFaultyNodeCount())/2;
     }
 

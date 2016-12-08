@@ -8,8 +8,8 @@ import com.spotify.docker.client.DockerException;
  */
 public class DockerusAuto extends Dockerus {
     DockerusAuto() throws DockerCertificateException {
-        //
     }
+
     private static Dockerus instance;
 
     static public Dockerus getInstance() {
@@ -20,7 +20,8 @@ public class DockerusAuto extends Dockerus {
             } catch (DockerCertificateException | InterruptedException | DockerException e) {
                 try {
                     DockerusAuto.instance = DockerusFile.getInstance();
-                } catch (DockerCertificateException e1) {
+                    DockerusAuto.instance.me();
+                } catch (DockerCertificateException | DockerException | InterruptedException e1) {
                     try {
                         DockerusAuto.instance = DockerusDummy.getInstance();
                     } catch (DockerCertificateException e2) {
