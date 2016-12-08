@@ -19,10 +19,14 @@ public class DockerusAuto extends Dockerus {
                 DockerusAuto.instance.me();
             } catch (DockerCertificateException | InterruptedException | DockerException e) {
                 try {
-                    DockerusAuto.instance = DockerusDummy.getInstance();
+                    DockerusAuto.instance = DockerusFile.getInstance();
                 } catch (DockerCertificateException e1) {
-                    System.err.println("LOL THIS SHOULDN'T FAIL BECAUSE FAILING IS NOT IMPLEMENTED!!!111");
-                    e1.printStackTrace();
+                    try {
+                        DockerusAuto.instance = DockerusDummy.getInstance();
+                    } catch (DockerCertificateException e2) {
+                        System.err.println("LOL THIS SHOULDN'T FAIL BECAUSE FAILING IS NOT IMPLEMENTED!!!111");
+                        e1.printStackTrace();
+                    }
                 }
             }
         }
