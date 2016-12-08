@@ -20,7 +20,7 @@ import static de.luckydonald.utils.Streams.toArrayList;
 import static java.util.stream.Collectors.groupingBy;
 
 /**
- * Created by TassoDübel und IngridBoldt
+ * Created by LuckyDonald und IngridBoldt
  */
 
 public class NormalCase {
