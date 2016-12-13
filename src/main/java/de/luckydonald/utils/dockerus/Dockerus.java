@@ -25,16 +25,27 @@ public class Dockerus {
 
     static private Dockerus instance = null;
 
-    static public Dockerus getInstance() throws DockerCertificateException {
+    static public Dockerus getInstance() throws IDoNotWantThisException {
         if (Dockerus.instance == null) {
             Dockerus.instance = new Dockerus();
+            try {
+                Dockerus.instance.me();
+            } catch (DockerException | InterruptedException e) {
+                e.printStackTrace();
+                throw new IDoNotWantThisException(e);
+            }
         }
         return Dockerus.instance;
     }
 
-    Dockerus() throws DockerCertificateException {
+    Dockerus() throws IDoNotWantThisException {
         // Create a client based on DOCKER_HOST and DOCKER_CERT_PATH env vars
-        docker = DefaultDockerClient.fromEnv().build();
+        try {
+            docker = DefaultDockerClient.fromEnv().build();
+        } catch (DockerCertificateException e) {
+            e.printStackTrace();
+            throw new IDoNotWantThisException(e);
+        }
         // docker.listContainers(DockerClient.ListContainersParam.withLabel(""))
     }
 

@@ -11,13 +11,13 @@ import java.util.List;
 
 public class DockerusDummy extends Dockerus{
 
-    private DockerusDummy() throws DockerCertificateException {
+    private DockerusDummy() throws IDoNotWantThisException {
         System.out.println("Project probably not loaded in docker-compose...");
     }
 
     static private DockerusDummy instance = null;
 
-    static public DockerusDummy getInstance() throws DockerCertificateException {
+    static public DockerusDummy getInstance() throws IDoNotWantThisException {
         if (DockerusDummy.instance == null) {
             DockerusDummy.instance = new DockerusDummy();
         }

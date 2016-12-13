@@ -3,6 +3,7 @@ package de.teamproject16.pbft;
 import com.spotify.docker.client.DockerCertificateException;
 import com.spotify.docker.client.DockerException;
 import de.luckydonald.utils.dockerus.DockerusAuto;
+import de.luckydonald.utils.dockerus.IDoNotWantThisException;
 import de.teamproject16.pbft.Messages.*;
 import de.teamproject16.pbft.Network.MessageQueue;
 import de.teamproject16.pbft.Network.Receiver;
@@ -49,7 +50,7 @@ public class NormalCase {
      * @throws DockerCertificateException
      */
     public double normalFunction() throws DockerException, InterruptedException, UnsupportedEncodingException,
-            DockerCertificateException, JSONException, TimeoutException {
+            DockerCertificateException, JSONException, TimeoutException, IDoNotWantThisException {
         cleanUp();
         long newSeq = calculateSequenceNumber();
         if (this.sequenceNo >= newSeq) {
@@ -154,7 +155,7 @@ public class NormalCase {
      * @throws UnsupportedEncodingException
      * @throws DockerCertificateException
      */
-    public VerifyAgreementResult checkAgreement(List<Message> store) throws DockerException, InterruptedException, UnsupportedEncodingException, DockerCertificateException {
+    public VerifyAgreementResult checkAgreement(List<Message> store) throws DockerException, InterruptedException, UnsupportedEncodingException, DockerCertificateException, IDoNotWantThisException {
         double value = 0.0;
         for (Message e : store){
             if (e instanceof PrevoteMessage) {
@@ -179,12 +180,12 @@ public class NormalCase {
         return new VerifyAgreementResult(false, value);
     }
 
-    double muchMoreThenHalf() throws DockerException, InterruptedException {
+    double muchMoreThenHalf() throws DockerException, InterruptedException, IDoNotWantThisException {
         //System.out.println((this.getTotalNodeCount() + getFaultyNodeCount())/2);
         return (this.getTotalNodeCount() + getFaultyNodeCount())/2;
     }
 
-    public void leaderChange() throws DockerException, InterruptedException, JSONException, UnsupportedEncodingException, DockerCertificateException {
+    public void leaderChange() throws DockerException, InterruptedException, JSONException, UnsupportedEncodingException, DockerCertificateException, IDoNotWantThisException {
         this.incrementLeader();
         sender.sendMessage(new LeaderChangeMessage(this.sequenceNo, getNumber(), this.leader, prevoteStore));
         if(this.leader == getNumber()) {
@@ -230,7 +231,7 @@ public class NormalCase {
      * @throws DockerException
      * @throws InterruptedException
      */
-    int getNumber() throws DockerException, InterruptedException {
+    int getNumber() throws DockerException, InterruptedException, IDoNotWantThisException {
         return DockerusAuto.getInstance().getNumber();
     }
 
@@ -240,7 +241,7 @@ public class NormalCase {
      * @throws DockerException
      * @throws InterruptedException
      */
-    public void incrementLeader() throws DockerException, InterruptedException {
+    public void incrementLeader() throws DockerException, InterruptedException, IDoNotWantThisException {
         this.leader = (int) ((this.leader + 1) % this.getTotalNodeCount());
     }
 
@@ -262,7 +263,7 @@ public class NormalCase {
      * @throws DockerException
      * @throws InterruptedException
      */
-    public double getFaultyNodeCount() throws DockerException, InterruptedException {
+    public double getFaultyNodeCount() throws DockerException, InterruptedException, IDoNotWantThisException {
         return (this.getTotalNodeCount() -  1)/3;
     }
 
@@ -273,7 +274,7 @@ public class NormalCase {
      * @throws DockerException
      * @throws InterruptedException
      */
-    public double getTotalNodeCount() throws DockerException, InterruptedException {
+    public double getTotalNodeCount() throws DockerException, InterruptedException, IDoNotWantThisException {
         return DockerusAuto.getInstance().getTotal(false);
     }
 

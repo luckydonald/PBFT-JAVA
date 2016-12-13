@@ -19,7 +19,7 @@ public class DockerusFile extends Dockerus {
 
     ArrayList hostnames = new ArrayList();
 
-    DockerusFile() throws DockerCertificateException {
+    DockerusFile() throws IDoNotWantThisException {
         try {
             BufferedReader reader = new BufferedReader(new FileReader("src/main/Hostnames.csv"));
             String line = null;
@@ -28,15 +28,15 @@ public class DockerusFile extends Dockerus {
                     hostnames.add(line);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new IDoNotWantThisException(e);
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw new IDoNotWantThisException(e);
         }
     }
     static private Dockerus instance = null;
 
-    static public Dockerus getInstance() throws DockerCertificateException {
+    static public Dockerus getInstance() throws IDoNotWantThisException {
         if (DockerusFile.instance == null) {
             DockerusFile.instance = new DockerusFile();
         }

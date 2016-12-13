@@ -3,6 +3,7 @@ package de.teamproject16.pbft.Network;
 import com.spotify.docker.client.DockerCertificateException;
 import com.spotify.docker.client.DockerException;
 import de.luckydonald.utils.dockerus.DockerusAuto;
+import de.luckydonald.utils.dockerus.IDoNotWantThisException;
 import de.teamproject16.pbft.Messages.Message;
 import de.teamproject16.pbft.Network.Database.Dumper;
 import org.json.JSONException;
@@ -28,7 +29,7 @@ public class Sender {
      * @throws DockerException
      * @throws DockerCertificateException
      */
-    public void sendMessage(Message msg) throws UnsupportedEncodingException, InterruptedException, DockerException, DockerCertificateException, JSONException {
+    public void sendMessage(Message msg) throws JSONException, InterruptedException, IDoNotWantThisException, DockerException, UnsupportedEncodingException {
         String json = msg.messageEncode().toString();
         broadcast(json);
         Dumper.send(json);
@@ -42,7 +43,7 @@ public class Sender {
      * @throws DockerException
      * @throws InterruptedException
      */
-    public void broadcast(String message) throws UnsupportedEncodingException, DockerCertificateException, DockerException, InterruptedException {
+    public void broadcast(String message) throws IDoNotWantThisException, DockerException, InterruptedException, UnsupportedEncodingException {
         List<String> otherHostnames = DockerusAuto.getInstance().getHostnames(false);
         message += "\n";
         msg = "ANSWER " + message.length() + "\n" + message;
