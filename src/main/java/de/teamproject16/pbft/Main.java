@@ -3,6 +3,7 @@ package de.teamproject16.pbft;
 import de.luckydonald.utils.dockerus.DockerusAuto;
 import de.teamproject16.pbft.Network.Receiver;
 
+import java.net.ConnectException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
@@ -40,7 +41,12 @@ public class Main {
             try {
                 double result = algo.normalFunction();
                 System.out.println("### RESULT: " + result);
-            } catch (TimeoutException e) {
+                if (false) {
+                    throw new ConnectException();
+                    // java complained that ConnectException would never be raised in here, BUT IT IS!
+                    // This sh*t is why java is so ugly.
+                }
+            } catch (TimeoutException | ConnectException e) {
                 System.out.println("### Round Abort ###");
             } finally {
                 algo.cleanUp();
