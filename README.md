@@ -7,3 +7,19 @@ Environment variables
 
 - `HOSTNAME` own host name (should be given from the system)
 - `API_HOST` where the api node is.
+
+
+Configuration file
+------------------
+If this is launched via docker-compose, and is multiplied using `scale`,
+it will already grab all needed info from docker.
+
+If you specify a `config.json` file however, that one will be used:
+
+```python
+{
+    "node_hosts": ["192.168.2.8", "192.168.2.9", "192.168.2.10", "192.168.2.11"],
+    "own_host": "192.168.2.8",  # If not given: Falls back to the local socket ip address, which might be wrong!
+    "api_host": "http://example.com/"  # If you have this entry, it overwrites $API_HOST env variable.  Or null, to disable.
+}
+```

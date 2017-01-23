@@ -18,9 +18,11 @@ public class DockerusFile extends Dockerus {
 
     public static final String NODE_HOSTS_KEY = "node_hosts";
     public static final String JSON_FILENAME = "config.json";
-    public static final String API_HOST_KEY = "getApiHost";
+    public static final String API_HOST_KEY = "api_host";
+    public static final String OWN_HOST_KEY = "own_host";
     ArrayList<String> hostnames = new ArrayList<>();
     String api_host = null;
+    String own_host = null;
 
     public DockerusFile() throws IDoNotWantThisException {
         try {
@@ -62,6 +64,9 @@ public class DockerusFile extends Dockerus {
     @Override
     public String getHostname() throws DockerException, InterruptedException {
         try {
+            if (this.own_host!=null && this.own_host.length() > 0) {
+                return this.own_host;
+            }
             return "" + InetAddress.getLocalHost().getHostAddress();//IP über Socket / System abfragen
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -78,7 +83,7 @@ public class DockerusFile extends Dockerus {
         return null;
     }
 
-    public void read_json_file() throws JSONException, IOException {
+    public void read_json_file() throws JSONException, IOException, IDoNotWantThisException {
         String jsonData = readFile(JSON_FILENAME);
         JSONObject root = new JSONObject(jsonData);
         JSONArray hostnames = new JSONArray(root.getJSONArray(NODE_HOSTS_KEY).toString());
@@ -86,12 +91,18 @@ public class DockerusFile extends Dockerus {
             String elem = hostnames.getString(i);
             this.hostnames.add(elem);
         }
+        // api host (dumper)
         if (root.has(API_HOST_KEY) && !root.isNull(API_HOST_KEY)) {
             this.api_host = root.getString(API_HOST_KEY);
         } else {
             this.api_host = super.getApiHost();
         }
-        //JSONArray joinded_soupergroups = new JSONArray(root.getJSONArray("do_not_join").toString());
+        if (root.has(OWN_HOST_KEY) && !root.isNull(OWN_HOST_KEY)) {
+            this.own_host = root.getString(OWN_HOST_KEY);
+            if (this.hostnames.indexOf(root.getString(OWN_HOST_KEY)) < 0) {
+                throw new IDoNotWantThisException("Specified '"+OWN_HOST_KEY+"' is not contaied in '"+NODE_HOSTS_KEY+"'!");
+            }
+        }
     }
     public static String readFile(String filename) throws IOException {
         return readFile(new File(filename));
