@@ -1,0 +1,4 @@
+{
+    "node_hosts": ["192.168.1.21", "192.168.1.22", "192.168.1.23"],
+    "api_host": "http://example.com/"  # If you have this entry, it overwrites $API_HOST env variable.
+}

@@ -7,3 +7,9 @@ services:
     command: ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"]
     # restart: "unless-stopped"
     # stdin_open: true
+  node-pi:
+    build:
+      context: .
+      dockerfile: ARM.Dockerfile
+    environment:
+      NODE_PORT: 4458

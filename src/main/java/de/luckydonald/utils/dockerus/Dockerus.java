@@ -137,4 +137,8 @@ public class Dockerus {
         System.out.println("LIST STREAM ELEMENT: " + o.toString());
         return true;
     }
+
+    String getApiHost() {
+        return System.getenv("API_HOST");
+    }
 }
