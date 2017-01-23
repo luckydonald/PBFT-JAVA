@@ -31,7 +31,7 @@ public class Dockerus {
             try {
                 Dockerus.instance.me();
             } catch (DockerException | InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
                 throw new IDoNotWantThisException(e);
             }
         }
