@@ -1,4 +1,5 @@
+# nano Desktop/PBFT-JAVA/config.json
 {
-    "node_hosts": ["192.168.1.21", "192.168.1.22", "192.168.1.23"],
+    "node_hosts": ["192.168.2.8", "192.168.2.9", "192.168.2.10", "192.168.2.11"],
     "api_host": "http://example.com/"  # If you have this entry, it overwrites $API_HOST env variable.
 }

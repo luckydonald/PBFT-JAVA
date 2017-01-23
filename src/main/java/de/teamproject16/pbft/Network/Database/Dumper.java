@@ -23,8 +23,12 @@ public class Dumper extends ObjectWithLogger {
     public static Dockerus dockerus = null;
 
     public static void send(String json) {
+        String host_to_post = getApiHost();
+        if (dockerus == null || host_to_post == null || host_to_post.length() < 1) {
+            return;
+        }
         try {
-            URL url = new URL(getApiHost() + "/dump/"); // TODO: env
+            URL url = new URL(host_to_post + "/dump/"); // TODO: env
             HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
             httpCon.setDoOutput(true);
             httpCon.setRequestMethod("PUT");
@@ -33,8 +37,6 @@ public class Dumper extends ObjectWithLogger {
             out.write(json);
             out.close();
             httpCon.getInputStream();
-        } catch (MalformedURLException | ProtocolException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
