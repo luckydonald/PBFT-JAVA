@@ -138,7 +138,7 @@ public class Dockerus {
         return true;
     }
 
-    String getApiHost() {
+    public String getApiHost() {
         return System.getenv("API_HOST");
     }
 }

@@ -19,8 +19,6 @@ import java.util.List;
  */
 public class Sender {
 
-    String msg;
-
     /**
      * Make the message object to a string and give it to the method broadcast.
      * @param msg object from message with specific data.
@@ -46,7 +44,7 @@ public class Sender {
     public void broadcast(String message) throws IDoNotWantThisException, DockerException, InterruptedException, UnsupportedEncodingException {
         List<String> otherHostnames = DockerusAuto.getInstance().getHostnames(false);
         message += "\n";
-        msg = "ANSWER " + message.length() + "\n" + message;
+        String msg = "ANSWER " + message.length() + "\n" + message;
         byte[] msgBytes = msg.getBytes("UTF-8");
         for (String nodeHost: otherHostnames){
             Boolean sent = false;

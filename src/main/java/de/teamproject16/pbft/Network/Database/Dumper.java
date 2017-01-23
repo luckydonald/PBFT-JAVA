@@ -1,6 +1,9 @@
 package de.teamproject16.pbft.Network.Database;
 
 import de.luckydonald.utils.ObjectWithLogger;
+import de.luckydonald.utils.dockerus.Dockerus;
+import de.luckydonald.utils.dockerus.DockerusAuto;
+import de.luckydonald.utils.dockerus.IDoNotWantThisException;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -16,9 +19,12 @@ import java.net.URL;
  * @since 31.10.2016
  **/
 public class Dumper extends ObjectWithLogger {
+
+    public static Dockerus dockerus = null;
+
     public static void send(String json) {
         try {
-            URL url = new URL("http://api/dump/"); // TODO: env
+            URL url = new URL(getApiHost() + "/dump/"); // TODO: env
             HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
             httpCon.setDoOutput(true);
             httpCon.setRequestMethod("PUT");
@@ -33,5 +39,14 @@ public class Dumper extends ObjectWithLogger {
             e.printStackTrace();
         }
 
+    }
+
+    public static String getApiHost() {
+        try {
+            return DockerusAuto.getInstance().getApiHost();
+        } catch (IDoNotWantThisException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
