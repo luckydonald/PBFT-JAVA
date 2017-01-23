@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Main class of the program. Strarting stuff.
+ * Main class of the program. Starting stuff.
  */
 public class Main {
     public static void main(String[] args) throws Exception {

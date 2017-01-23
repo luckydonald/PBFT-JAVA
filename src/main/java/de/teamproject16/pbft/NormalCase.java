@@ -21,7 +21,7 @@ import static de.luckydonald.utils.Streams.toArrayList;
 import static java.util.stream.Collectors.groupingBy;
 
 /**
- * Created by LuckyDonald und IngridBoldt
+ * Created by Luckydonald und IngridBoldt
  */
 
 public class NormalCase {
@@ -43,7 +43,7 @@ public class NormalCase {
     }
 
     /**
-     * The row 15 to 27 from the algorithm.
+     * The row 15 to 27 from the algorithm given in the pdf over pbft.
      * @throws DockerException
      * @throws InterruptedException
      * @throws UnsupportedEncodingException
@@ -112,7 +112,7 @@ public class NormalCase {
                     state = 2;
                     o("state = 2");
                 }
-                if (state == 2 && !MessageQueue.prevoteM.isEmpty()) { //abfrage das die sequenznr stimmt fehlt
+                if (state == 2 && !MessageQueue.prevoteM.isEmpty()) {
                     o("Got PrevoteMessage");
                     prevoteStore.add((PrevoteMessage) MessageQueue.prevoteM.take());
                     VerifyAgreementResult agreement = checkAgreement(prevoteStore.stream().collect(toArrayList()));
@@ -180,11 +180,27 @@ public class NormalCase {
         return new VerifyAgreementResult(false, value);
     }
 
+    /**
+     * Check that more than the half of the group members approve the result.
+     * @return
+     * @throws DockerException
+     * @throws InterruptedException
+     * @throws IDoNotWantThisException
+     */
     double muchMoreThenHalf() throws DockerException, InterruptedException, IDoNotWantThisException {
         //System.out.println((this.getTotalNodeCount() + getFaultyNodeCount())/2);
         return (this.getTotalNodeCount() + getFaultyNodeCount())/2;
     }
 
+    /**
+     * We have a timeout for it. But here you can change it.
+     * @throws DockerException
+     * @throws InterruptedException
+     * @throws JSONException
+     * @throws UnsupportedEncodingException
+     * @throws DockerCertificateException
+     * @throws IDoNotWantThisException
+     */
     public void leaderChange() throws DockerException, InterruptedException, JSONException, UnsupportedEncodingException, DockerCertificateException, IDoNotWantThisException {
         this.incrementLeader();
         sender.sendMessage(new LeaderChangeMessage(this.sequenceNo, getNumber(), this.leader, prevoteStore));
@@ -195,6 +211,10 @@ public class NormalCase {
         }
     }
 
+    /**
+     * We have a timeout for it. But here you can change it.
+     * @param leaderChangeMessageList
+     */
     public void getLastPrepared(List<LeaderChangeMessage> leaderChangeMessageList) {
         LeaderChangeMessage lastPreparedTemp = null;
         // Tuple: Round number, prevoted value
@@ -226,7 +246,6 @@ public class NormalCase {
 
     /**
      * Retrieves the number this node has.
-     *
      * @return number of the node
      * @throws DockerException
      * @throws InterruptedException
@@ -236,8 +255,7 @@ public class NormalCase {
     }
 
     /**
-     * Selectes the next leader.
-     *
+     * Selects the next leader.
      * @throws DockerException
      * @throws InterruptedException
      */
@@ -253,12 +271,10 @@ public class NormalCase {
     public static boolean verifyProposal(ProposeMessage msg) throws InterruptedException {
         double medianS = Median.calculateMedian(msg.value_store);
         return msg.proposal == medianS;
-        //fragen nach gleicher sequenznr. und warum tun wir das nicht beim initstore noch mal?
     }
 
     /**
      * Calculates the faulty nodes.
-     *
      * @return count of possible faulty nodes.
      * @throws DockerException
      * @throws InterruptedException
@@ -269,7 +285,6 @@ public class NormalCase {
 
     /**
      * Retrieves the total amount of nodes.
-     *
      * @return count of total nodes in the system.
      * @throws DockerException
      * @throws InterruptedException
