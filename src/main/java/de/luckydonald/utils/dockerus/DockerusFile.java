@@ -127,4 +127,13 @@ public class DockerusFile extends Dockerus {
         }
         return result;
     }
+
+    @Override
+    public String getApiHost() {
+        if (this.api_host != null ) {
+            return this.api_host;
+        } else {
+            return super.getApiHost();
+        }
+    }
 }

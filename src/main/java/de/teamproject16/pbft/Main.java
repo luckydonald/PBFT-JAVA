@@ -30,6 +30,7 @@ public class Main {
         sb.append("Node number:    ").append(DockerusAuto.getInstance().getNumber()).append("\n");
         sb.append("Node name:      ").append(DockerusAuto.getInstance().getName()).append("\n");
         sb.append("Node project:   ").append(DockerusAuto.getInstance().getProject()).append("\n");
+        sb.append("API Host:       ").append(DockerusAuto.getInstance().getApiHost()).append("\n");
         sb.append("\n[Other nodes]\n");
         for (String n : DockerusAuto.getInstance().getHostnames(false)) {
             sb.append(" - ").append(n).append("\n");
