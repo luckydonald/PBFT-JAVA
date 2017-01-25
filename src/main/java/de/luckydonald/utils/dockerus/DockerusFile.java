@@ -86,9 +86,9 @@ public class DockerusFile extends Dockerus {
     public void read_json_file() throws JSONException, IOException, IDoNotWantThisException {
         String jsonData = readFile(JSON_FILENAME);
         JSONObject root = new JSONObject(jsonData);
-        JSONArray hostnames = new JSONArray(root.getJSONArray(NODE_HOSTS_KEY).toString());
-        for (int i = 0; i < hostnames.length(); i++) {
-            String elem = hostnames.getString(i);
+        JSONArray hostnames_json = new JSONArray(root.getJSONArray(NODE_HOSTS_KEY).toString());
+        for (int i = 0; i < hostnames_json.length(); i++) {
+            String elem = hostnames_json.getString(i);
             this.hostnames.add(elem);
         }
         // api host (dumper)
@@ -99,8 +99,11 @@ public class DockerusFile extends Dockerus {
         }
         if (root.has(OWN_HOST_KEY) && !root.isNull(OWN_HOST_KEY)) {
             this.own_host = root.getString(OWN_HOST_KEY);
-            if (this.hostnames.indexOf(root.getString(OWN_HOST_KEY)) < 0) {
-                throw new IDoNotWantThisException("Specified '"+OWN_HOST_KEY+"' is not contaied in '"+NODE_HOSTS_KEY+"'!");
+            if (this.hostnames.indexOf(this.own_host) < 0) {
+                throw new IDoNotWantThisException(
+                        "Specified '"+OWN_HOST_KEY+"' ("+this.own_host+") " +
+                        "is not contained in '"+NODE_HOSTS_KEY+"("+hostnames_json+")'!"
+                );
             }
         }
     }
