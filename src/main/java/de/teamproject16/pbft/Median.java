@@ -20,7 +20,7 @@ public class Median {
         }
         //TODO: End lock
         Collections.sort(floatStore);
-        int calculate = floatStore.size()/2;
+        int calculate = (floatStore.size()-1)/2;
         return floatStore.get(calculate);
     }
 }
