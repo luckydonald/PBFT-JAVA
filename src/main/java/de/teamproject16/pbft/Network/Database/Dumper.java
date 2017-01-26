@@ -19,12 +19,9 @@ import java.net.URL;
  * @since 31.10.2016
  **/
 public class Dumper extends ObjectWithLogger {
-
-    public static Dockerus dockerus = null;
-
     public static void send(String json) {
         String host_to_post = getApiHost();
-        if (dockerus == null || host_to_post == null || host_to_post.length() < 1) {
+        if (host_to_post == null || host_to_post.length() < 1) {
             return;
         }
         try {
