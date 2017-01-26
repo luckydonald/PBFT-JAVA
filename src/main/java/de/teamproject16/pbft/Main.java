@@ -41,8 +41,9 @@ public class Main {
             System.out.println("### STARTING ROUND ###");
             try {
                 float measurement = TODO.getSensorValue();
-                System.out.println("### MEASURED: " + measurement);
+                System.out.println("### NEW MEASUREMENT: " + measurement);
                 double result = algo.normalFunction(measurement);
+                System.out.println("### MEASURED: " + measurement);
                 System.out.println("### RESULT: " + result);
                 if (false) {
                     throw new ConnectException();
