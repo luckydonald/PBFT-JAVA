@@ -49,7 +49,7 @@ public class NormalCase {
      * @throws UnsupportedEncodingException
      * @throws DockerCertificateException
      */
-    public double normalFunction() throws DockerException, InterruptedException, UnsupportedEncodingException,
+    public double normalFunction(float measurement) throws DockerException, InterruptedException, UnsupportedEncodingException,
             DockerCertificateException, JSONException, TimeoutException, IDoNotWantThisException {
         cleanUp();
         long newSeq = calculateSequenceNumber();
@@ -66,7 +66,7 @@ public class NormalCase {
         this.sequenceNo = newSeq;
         System.out.println("NODE ID: " + getNumber() + " SEQ_NO: " + sequenceNo);
 
-        sender.sendMessage(new InitMessage(this.sequenceNo, getNumber(), ToDO.getSensorValue()));
+        sender.sendMessage(new InitMessage(this.sequenceNo, getNumber(), measurement));
         //prevoteStore = new ArrayList<>();
         ArrayList<Message> voteStore = new ArrayList<>();
         int state = 0;
