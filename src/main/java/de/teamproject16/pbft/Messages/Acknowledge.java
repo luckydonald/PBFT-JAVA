@@ -12,7 +12,7 @@ import static de.teamproject16.pbft.Messages.Types.ACKNOWLEDGE;
 public class Acknowledge extends Message {
     //public int node;
     public int sender;
-    public String raw;
+    public JSONObject raw;
 
     /**
      *InitMessage
@@ -31,9 +31,9 @@ public class Acknowledge extends Message {
      * @param sequence_no of tries
      * @param node the id of the current node
      * @param sender the id of the other node, the sender
-     * @param raw raw json text
+     * @param raw json which was received
      */
-    public Acknowledge(long sequence_no, int node, int sender, String raw) {
+    public Acknowledge(long sequence_no, int node, int sender, JSONObject raw) {
         super(node, ACKNOWLEDGE, sequence_no);
         //this.node = node;
         this.sender = sender;

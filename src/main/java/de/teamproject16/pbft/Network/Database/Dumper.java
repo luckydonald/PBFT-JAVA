@@ -36,7 +36,7 @@ public class Dumper extends ObjectWithLogger {
             httpCon.getInputStream().close();
             System.out.println("PUT " + url + ": "+ httpCon.getResponseCode() + " - " + httpCon.getResponseMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Sending message to API failed: " + e.toString());
         }
 
     }

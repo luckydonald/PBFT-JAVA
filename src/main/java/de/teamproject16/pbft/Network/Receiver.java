@@ -175,16 +175,16 @@ public class Receiver extends Thread {
         }
     }
 
-    public void addMessage(String json) {
+    private void addMessage(String json_string) {
         synchronized (this) {
             try {
-                JSONObject data = new JSONObject(json);
-                Message msg = Message.messageConvert(data);
+                JSONObject json = new JSONObject(json_string);
+                Message msg = Message.messageConvert(json);
                 try {
                     Acknowledge ack = new Acknowledge(msg.sequence_no, DockerusAuto.getInstance().getNumber(), msg.node, json);
-                    Dumper.send(ack.toString());
-                } catch(Exception e) {
-
+                    Dumper.send(ack.messageEncode().toString());
+                } catch(Exception ignore) {
+                    // pass
                 }
                 MessageQueue.messageQueue(msg);
             } catch (JSONException e) {
