@@ -9,7 +9,7 @@ import static de.teamproject16.pbft.Messages.Types.INIT;
  */
 public class InitMessage extends Message {
     public double value;
-    public int node;
+    //public int node;
 
     /**
      *InitMessage
@@ -18,8 +18,8 @@ public class InitMessage extends Message {
      * @param value the value of the sensor from the node
      */
     public InitMessage(long sequence_no, int node, double value) {
-        super(INIT, sequence_no);
-        this.node = node;
+        super(node, INIT, sequence_no);
+        //this.node = node;
         this.value = value;
     }
 
@@ -41,7 +41,6 @@ public class InitMessage extends Message {
      */
     public JSONObject messageEncode() throws JSONException {
         JSONObject data = super.messageEncode();
-        data.put("node", this.node);
         data.put("value", this.value);
         return data;
     }

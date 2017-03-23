@@ -10,7 +10,7 @@ import static de.teamproject16.pbft.Messages.Types.VOTE;
  */
 public class VoteMessage extends Message {
 
-    public int node;
+    //public int node;
     public int leader;
     public double value;
 
@@ -22,8 +22,8 @@ public class VoteMessage extends Message {
      * @param value of the sensor
      */
     public VoteMessage(long sequence_no, int node, int leader, double value) {
-        super(VOTE, sequence_no);
-        this.node = node;
+        super(node, VOTE, sequence_no);
+        //this.node = node;
         this.leader = leader;
         this.value = value;
     }
@@ -46,7 +46,7 @@ public class VoteMessage extends Message {
      */
     public JSONObject messageEncode() throws JSONException {
         JSONObject data = super.messageEncode();
-        data.put("node", this.node);
+        //data.put("node", this.node);
         data.put("leader", this.leader);
         data.put("value", this.value);
         return data;

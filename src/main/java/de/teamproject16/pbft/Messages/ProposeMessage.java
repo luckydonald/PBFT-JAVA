@@ -15,7 +15,7 @@ import static de.teamproject16.pbft.Messages.Types.PROPOSE;
  */
 public class ProposeMessage extends Message {
 
-    public int node;
+    //public int node;
     public int leader;
     public double proposal;
     public List<InitMessage> value_store;
@@ -29,8 +29,8 @@ public class ProposeMessage extends Message {
      * @param value_store values from all nodes in the network
      */
     public ProposeMessage(long sequence_no, int node, int leader, double proposal, List<InitMessage> value_store) {
-        super(PROPOSE, sequence_no);
-        this.node = node;
+        super(node, PROPOSE, sequence_no);
+        //this.node = node;
         this.leader = leader;
         this.proposal = proposal;
         this.value_store = value_store;
@@ -62,7 +62,6 @@ public class ProposeMessage extends Message {
      */
     public JSONObject messageEncode() throws JSONException {
         JSONObject data = super.messageEncode();
-        data.put("node", this.node);
         data.put("leader", this.leader);
         data.put("proposal", this.proposal);
         JSONArray value_store_temp = new JSONArray();

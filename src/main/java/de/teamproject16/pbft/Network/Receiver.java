@@ -1,6 +1,9 @@
 package de.teamproject16.pbft.Network;
 
+import de.luckydonald.utils.dockerus.DockerusAuto;
+import de.teamproject16.pbft.Messages.Acknowledge;
 import de.teamproject16.pbft.Messages.Message;
+import de.teamproject16.pbft.Network.Database.Dumper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -176,7 +179,14 @@ public class Receiver extends Thread {
         synchronized (this) {
             try {
                 JSONObject data = new JSONObject(json);
-                MessageQueue.messageQueue(Message.messageConvert(data));
+                Message msg = Message.messageConvert(data);
+                try {
+                    Acknowledge ack = new Acknowledge(msg.sequence_no, DockerusAuto.getInstance().getNumber(), msg.node, json);
+                    Dumper.send(ack.toString());
+                } catch(Exception e) {
+
+                }
+                MessageQueue.messageQueue(msg);
             } catch (JSONException e) {
                 System.out.println("Convert the String to JSONObject failed.");
                 e.printStackTrace();

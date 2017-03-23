@@ -7,7 +7,7 @@ import org.json.JSONObject;
  * Created by IngridBoldt on 29.09.16.
  */
 public class Message {
-
+    public int node;
     int type;
     public long sequence_no;
 
@@ -16,7 +16,8 @@ public class Message {
      * @param type messagetype
      * @param sequence_no of tries
      */
-    public Message(int type, long sequence_no){
+    public Message(int node, int type, long sequence_no){
+        this.node = node;
         this.type = type;
         this.sequence_no = sequence_no;
     }
@@ -41,6 +42,7 @@ public class Message {
      */
     public JSONObject messageEncode () throws JSONException {
         JSONObject data = new JSONObject();
+        data.put("node", this.node);
         data.put("type", this.type);
         data.put("sequence_no", this.sequence_no);
         return data;
@@ -75,6 +77,6 @@ public class Message {
         if (Types.VOTE == type){
             return VoteMessage.messageDecipher(data);
         }
-        return new Message(data.getInt("type"), data.getLong("sequence_no"));
+        return new Message(data.getInt("node"), data.getInt("type"), data.getLong("sequence_no"));
     }
 }

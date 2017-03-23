@@ -9,7 +9,7 @@ import static de.teamproject16.pbft.Messages.Types.PREVOTE;
  */
 public class PrevoteMessage extends Message {
 
-    public int node;
+    //public int node;
     public int leader;
     public double value;
 
@@ -21,8 +21,8 @@ public class PrevoteMessage extends Message {
      * @param value from the node
      */
     public PrevoteMessage(long sequence_no, int node, int leader, double value) {
-        super(PREVOTE, sequence_no);
-        this.node = node;
+        super(node, PREVOTE, sequence_no);
+        //this.node = node;
         this.leader = leader;
         this.value = value;
     }
@@ -45,7 +45,7 @@ public class PrevoteMessage extends Message {
      */
     public JSONObject messageEncode() throws JSONException {
         JSONObject data = super.messageEncode();
-        data.put("node", this.node);
+        //data.put("node", this.node);
         data.put("leader", this.leader);
         data.put("value", this.value);
         return data;

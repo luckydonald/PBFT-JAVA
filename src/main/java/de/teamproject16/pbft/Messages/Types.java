@@ -9,4 +9,5 @@ public class Types {
     public static final int PREVOTE = 3;  // Our median we calculated all by our self!
     public static final int VOTE = 4;
     public static final int LEADER_CHANGE = 5;
+    public static final int ACKNOWLEDGE = -1;
 }
