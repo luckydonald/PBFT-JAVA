@@ -29,8 +29,8 @@ public class Sender {
      */
     public void sendMessage(Message msg) throws JSONException, InterruptedException, IDoNotWantThisException, DockerException, UnsupportedEncodingException {
         String json = msg.messageEncode().toString();
-        broadcast(json);
         Dumper.send(json);
+        broadcast(json);
     }
 
     /**

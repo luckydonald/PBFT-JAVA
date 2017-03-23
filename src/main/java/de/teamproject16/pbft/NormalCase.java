@@ -25,7 +25,7 @@ import static java.util.stream.Collectors.groupingBy;
  */
 
 public class NormalCase {
-    public int sequencelength = 10000;
+    public int sequencelength = 1000;
 
     int leader = 1;
 
