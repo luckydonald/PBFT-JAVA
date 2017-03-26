@@ -20,10 +20,6 @@ import java.util.concurrent.TimeoutException;
 import static de.luckydonald.utils.Streams.toArrayList;
 import static java.util.stream.Collectors.groupingBy;
 
-/**
- * Created by Luckydonald und IngridBoldt
- */
-
 public class NormalCase {
     public int sequencelength = 5000;
 
@@ -82,15 +78,18 @@ public class NormalCase {
                 }
                 if(state == 0) {
                     if(this.leader == getNumber()) {  // are we the leader?
-                        System.out.println("LEADER! Got " + this.initStore.size() + " messages.");
-                        if (this.initStore.size() >= (getTotalNodeCount() - getFaultyNodeCount())) {  // <---
+                        // remove old sequence numbers
+                        System.out.println("LEADER! Checking messages.");
+                        long valid_size = this.initStore.stream().filter(m -> m.sequence_no == this.sequenceNo).count();
+                        System.out.println("LEADER! Got " + valid_size + " messages. " + (this.initStore.size() - valid_size) + " messages were ignored.");
+                        if (valid_size >= (getTotalNodeCount() - getFaultyNodeCount())) {  // <---
                             o("ENOUGH INIT");
                             sender.sendMessage(
                                     new ProposeMessage(
                                             this.sequenceNo,
                                             getNumber(),
                                             this.leader,
-                                            Median.calculateMedian(this.initStore),
+                                            Median.calculateMedian(this.initStore.stream().filter(m -> m.sequence_no == this.sequenceNo)),
                                             initStore
                                     )
                             );
@@ -142,7 +141,26 @@ public class NormalCase {
         }
     }
 
-    public long calculateSequenceNumber() {
+    /**
+     * Removes old messages from <code>this.initStore</code>.
+     */
+    private void initStoreRemoveOldMessages() {
+        boolean has_new = false;
+        for (InitMessage msg : this.initStore) {
+            if (msg.sequence_no < this.sequenceNo) {
+                has_new = true;
+                break;
+            }
+        }
+        if (!has_new) {
+            return;  // don't copy the array if nothing needs to be changed.
+        }
+        this.initStore = this.initStore.stream()
+                .filter(i-> i.sequence_no >= this.sequenceNo)
+                .collect(toArrayList());
+    }
+
+    private long calculateSequenceNumber() {
         return System.currentTimeMillis() / sequencelength;
     }
 
@@ -299,9 +317,7 @@ public class NormalCase {
     public void cleanUp() {
         this.sequenceNo = calculateSequenceNumber();
         if(this.initStore != null) {
-            this.initStore = this.initStore.stream()
-                .filter(i-> i.sequence_no >= this.sequenceNo)
-                .collect(toArrayList());
+            this.initStoreRemoveOldMessages();
         } else {
             this.initStore = new ArrayList<>();
         }
