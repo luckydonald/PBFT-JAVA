@@ -22,6 +22,7 @@ it will already grab all needed info from docker, and the following **Environmen
 
 - `HOSTNAME` own host name (should be given from the system)
 - `API_HOST` where the api node is. _Example: `http://localhost:8080/api`_
+- `SENSOR_SIMULATE` set to `1` to enable reading from the `DS1820` sensor (tested on Raspberry Pi)
 
 This happens in the class `Dockerus`.
 
@@ -34,7 +35,8 @@ If you specify a `config.json` file however, that one will be used:
 {
     "node_hosts": ["192.168.2.8", "192.168.2.9", "192.168.2.10", "192.168.2.11"],
     "own_host": "192.168.2.8",  # If not given: Falls back to the local socket ip address, which might be wrong!
-    "api_host": "http://example.com/"  # If you have this entry, it overwrites $API_HOST env variable.  Or null, to disable.
+    "api_host": "http://example.com/"  # If you have this entry, it overwrites $API_HOST env variable.  Or set to null, to disable.
+    "sensor_simulate": false  # If you have this entry, it overwrites $SENSOR_SIMULATE env variable.
 }
 ```
 This is handled in the class `DockerusFile`.

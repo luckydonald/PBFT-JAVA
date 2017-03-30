@@ -20,9 +20,11 @@ public class DockerusFile extends Dockerus {
     public static final String JSON_FILENAME = "config.json";
     public static final String API_HOST_KEY = "api_host";
     public static final String OWN_HOST_KEY = "own_host";
-    ArrayList<String> hostnames = new ArrayList<>();
-    String api_host = null;
-    String own_host = null;
+    public static final String SENSOR_SIMULATE_KEY = "sensor_simulate";
+    private ArrayList<String> hostnames = new ArrayList<>();
+    private String api_host = null;
+    private String own_host = null;
+    private Boolean sensor_simulate = true;
 
     public DockerusFile() throws IDoNotWantThisException {
         try {
@@ -58,7 +60,7 @@ public class DockerusFile extends Dockerus {
 
     @Override
     public int getNumber() throws DockerException, InterruptedException {
-        return hostnames.indexOf(this.getHostname()); //Sich selbst in der liste finden und position zurückgeben
+        return hostnames.indexOf(this.getHostname()); // find ourself in the list and return index.
     }
 
     @Override
@@ -67,7 +69,7 @@ public class DockerusFile extends Dockerus {
             if (this.own_host!=null && this.own_host.length() > 0) {
                 return this.own_host;
             }
-            return "" + InetAddress.getLocalHost().getHostAddress();//IP über Socket / System abfragen
+            return "" + InetAddress.getLocalHost().getHostAddress();  // get IP from socket/OS
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -94,6 +96,11 @@ public class DockerusFile extends Dockerus {
         // api host (dumper)
         if (root.has(API_HOST_KEY) && !root.isNull(API_HOST_KEY)) {
             this.api_host = root.getString(API_HOST_KEY);
+        } else {
+            this.api_host = super.getApiHost();
+        }
+        if (root.has(SENSOR_SIMULATE_KEY) && !root.isNull(SENSOR_SIMULATE_KEY)) {
+            this.sensor_simulate = root.getBoolean(SENSOR_SIMULATE_KEY);
         } else {
             this.api_host = super.getApiHost();
         }
@@ -134,6 +141,15 @@ public class DockerusFile extends Dockerus {
             return this.api_host;
         } else {
             return super.getApiHost();
+        }
+    }
+
+    @Override
+    public boolean getSensorSimulate() {
+        if (this.sensor_simulate != null ) {
+            return this.sensor_simulate;
+        } else {
+            return super.getSensorSimulate();
         }
     }
 }

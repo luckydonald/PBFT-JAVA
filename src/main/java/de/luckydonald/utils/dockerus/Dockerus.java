@@ -5,6 +5,7 @@ import com.spotify.docker.client.DockerCertificateException;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.messages.Container;
+import de.luckydonald.utils.UserInput;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -140,5 +141,9 @@ public class Dockerus {
 
     public String getApiHost() {
         return System.getenv("API_HOST");
+    }
+
+    public boolean getSensorSimulate() {
+        return UserInput.stringIsTrue(System.getenv("SENSOR_SIMULATE"));
     }
 }

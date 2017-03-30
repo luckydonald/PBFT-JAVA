@@ -116,4 +116,9 @@ public class DockerusDummy extends Dockerus{
         }
         this.total = total;
     }
+
+    @Override
+    public boolean getSensorSimulate() {
+        return true;
+    }
 }
