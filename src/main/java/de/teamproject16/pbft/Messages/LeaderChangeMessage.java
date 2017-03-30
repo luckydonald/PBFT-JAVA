@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import static de.teamproject16.pbft.Messages.Types.LEADER_CHANGE;
 
 /**
- * Created by IngridBoldt on 04.10.16.
+ * Json serializable LoaderChangeMessage message.
+ * Not implemented.
  */
 public class LeaderChangeMessage extends Message {
 

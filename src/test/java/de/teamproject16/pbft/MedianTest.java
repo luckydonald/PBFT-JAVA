@@ -9,10 +9,9 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * Created by  on
+ * Tests the median calculation.
  *
  * @author luckydonald
- * @since 31.10.2016
  **/
 public class MedianTest {
 

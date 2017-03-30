@@ -11,7 +11,7 @@ import static de.teamproject16.pbft.Messages.Types.PROPOSE;
 
 
 /**
- * Created by IngridBoldt on 29.09.16.
+ * Json serializable Propose message
  */
 public class ProposeMessage extends Message {
 

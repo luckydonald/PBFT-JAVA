@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import static de.teamproject16.pbft.Messages.Types.INIT;
 
 /**
- * Created by IngridBoldt on 29.09.16.
+ * Json serializable Init message
  */
 public class InitMessage extends Message {
     public double value;

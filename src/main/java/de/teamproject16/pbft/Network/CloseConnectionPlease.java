@@ -1,7 +1,7 @@
 package de.teamproject16.pbft.Network;
 
 /**
- * Created by luckydonald on 17.10.16.
+ * Raised if the connection should be closed.
  */
 public class CloseConnectionPlease extends Exception {
     public CloseConnectionPlease(String msg) {

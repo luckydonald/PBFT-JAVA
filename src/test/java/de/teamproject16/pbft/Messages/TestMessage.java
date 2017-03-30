@@ -9,7 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Created by IngridBoldt on 24.10.16.
+ * Unit tests for json serializable Test message
  */
 public class TestMessage {
     @Test

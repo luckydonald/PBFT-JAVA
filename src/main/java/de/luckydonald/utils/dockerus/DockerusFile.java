@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IngridBoldt on 08.12.16.
+ * This loads the configuration from a <code>config.json</code> file.
  */
 public class DockerusFile extends Dockerus {
 

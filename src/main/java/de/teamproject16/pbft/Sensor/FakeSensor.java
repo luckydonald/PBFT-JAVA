@@ -1,9 +1,9 @@
-package de.teamproject16.pbft;
+package de.teamproject16.pbft.Sensor;
 
 /**
- * Created by IngridBoldt on 26.10.16.
+ * This emulates sensor data.
  */
-public class TODO {
+public class FakeSensor {
     public static float getSensorValue (){
         float random = (float) Math.random()*10;
         return random;

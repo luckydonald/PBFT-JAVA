@@ -3,10 +3,9 @@ package de.luckydonald.utils.dockerus;
 import com.spotify.docker.client.DockerCertificateException;
 
 /**
- * Created by  on
+ * This can be raised if something should be raised and we want to catch something.
  *
  * @author luckydonald
- * @since 13.12.2016
  **/
 public class IDoNotWantThisException extends Exception {
 

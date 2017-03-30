@@ -2,6 +2,7 @@ package de.teamproject16.pbft;
 
 import de.luckydonald.utils.dockerus.DockerusAuto;
 import de.teamproject16.pbft.Network.Receiver;
+import de.teamproject16.pbft.Sensor.FakeSensor;
 
 import java.net.ConnectException;
 import java.util.concurrent.TimeoutException;
@@ -40,7 +41,7 @@ public class Main {
         while(true) {
             System.out.println("### STARTING ROUND ###");
             try {
-                float measurement = TODO.getSensorValue();
+                float measurement = FakeSensor.getSensorValue();
                 System.out.println("### NEW MEASUREMENT: " + measurement);
                 double result = algo.normalFunction(measurement);
                 System.out.println("### MEASURED: " + measurement);

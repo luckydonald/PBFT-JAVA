@@ -6,7 +6,7 @@ import static de.teamproject16.pbft.Messages.Types.VOTE;
 
 
 /**
- * Created by IngridBoldt on 06.10.16.
+ * Json serializable Vote message
  */
 public class VoteMessage extends Message {
 

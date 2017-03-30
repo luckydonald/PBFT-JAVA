@@ -15,7 +15,7 @@ import java.net.Socket;
 import java.util.List;
 
 /**
- * Created by IngridBoldt on 06.10.16.
+ * This handles sending messages.
  */
 public class Sender {
 

@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import static de.teamproject16.pbft.Messages.Types.PREVOTE;
 
 /**
- * Created by IngridBoldt on 29.09.16.
+ * Json serializable Prevote message
  */
 public class PrevoteMessage extends Message {
 

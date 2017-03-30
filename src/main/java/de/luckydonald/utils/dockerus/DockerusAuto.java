@@ -6,7 +6,8 @@ import com.spotify.docker.client.DockerException;
 import java.util.InvalidPropertiesFormatException;
 
 /**
- * Created by luckydonald on 17.10.16.
+ * This selects a best fitting way to load config. See the other Dockerus* classes.
+ * @author luckydonald
  */
 public class DockerusAuto extends Dockerus {
     DockerusAuto() throws IDoNotWantThisException {

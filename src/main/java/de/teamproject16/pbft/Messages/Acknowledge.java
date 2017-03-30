@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import static de.teamproject16.pbft.Messages.Types.ACKNOWLEDGE;
 
 /**
- * Created by PlayingBacon on 23.03.2017.
+ * This is just to notify the API server that we got a message.
  */
 public class Acknowledge extends Message {
     //public int node;

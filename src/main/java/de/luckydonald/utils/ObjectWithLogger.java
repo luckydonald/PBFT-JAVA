@@ -6,7 +6,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Created by luckydonald on 12.02.16.
+ * Adds a logger ready to use.
+ * @author luckydonald
  */
 public class ObjectWithLogger {
     private Logger logger = null;

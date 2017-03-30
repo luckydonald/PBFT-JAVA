@@ -9,10 +9,7 @@ import java.net.*;
 import java.nio.channels.SocketChannel;
 
 /**
- * Created by  on
- *
- * @author luckydonald
- * @since 26.10.2016
+ * Mocks a socket. For testing.
  **/
 public class SocketMockup extends Socket {
     public InputStream in = null;

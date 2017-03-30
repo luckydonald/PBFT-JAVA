@@ -4,7 +4,8 @@ import de.teamproject16.pbft.CancelableLinkedBlockingQueue;
 import de.teamproject16.pbft.Messages.*;
 
 /**
- * Created by IngridBoldt on 19.10.16.
+ * Enqueue all them messages, in one queue for each type.
+ * Like channels.
  */
 public class MessageQueue {
     public static CancelableLinkedBlockingQueue leaderChangeM = new CancelableLinkedBlockingQueue();

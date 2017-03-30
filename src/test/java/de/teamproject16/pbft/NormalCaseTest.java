@@ -15,10 +15,9 @@ import static de.teamproject16.pbft.Messages.Types.PROPOSE;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Created by IngridBoldt on 31.10.16.
+ * Created on 31.10.16.
  */
 public class NormalCaseTest {
-
     @Test
     public void testVerifyProposal() throws Exception {
         String json = "{\"type\": "+ PROPOSE + ", \"sequence_no\": 3, \"node\": 1, " +
