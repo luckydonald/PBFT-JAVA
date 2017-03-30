@@ -45,7 +45,7 @@ public class NormalCase {
      * @throws UnsupportedEncodingException
      * @throws DockerCertificateException
      */
-    public double normalFunction(float measurement) throws DockerException, InterruptedException, UnsupportedEncodingException,
+    public double normalFunction(double measurement) throws DockerException, InterruptedException, UnsupportedEncodingException,
             DockerCertificateException, JSONException, TimeoutException, IDoNotWantThisException {
         cleanUp();
         long newSeq = calculateSequenceNumber();

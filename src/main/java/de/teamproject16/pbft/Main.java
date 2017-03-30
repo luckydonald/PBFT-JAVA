@@ -1,8 +1,10 @@
 package de.teamproject16.pbft;
 
 import de.luckydonald.utils.dockerus.DockerusAuto;
+import de.luckydonald.utils.dockerus.IDoNotWantThisException;
 import de.teamproject16.pbft.Network.Receiver;
 import de.teamproject16.pbft.Sensor.FakeSensor;
+import de.teamproject16.pbft.Sensor.SensorSelector;
 
 import java.net.ConnectException;
 import java.util.concurrent.TimeoutException;
@@ -41,7 +43,7 @@ public class Main {
         while(true) {
             System.out.println("### STARTING ROUND ###");
             try {
-                float measurement = FakeSensor.getSensorValue();
+                double measurement = SensorSelector.getSensorValue();
                 System.out.println("### NEW MEASUREMENT: " + measurement);
                 double result = algo.normalFunction(measurement);
                 System.out.println("### MEASURED: " + measurement);
@@ -51,7 +53,7 @@ public class Main {
                     // java complained that ConnectException would never be raised in here, BUT IT IS!
                     // This sh*t is why java is so ugly.
                 }
-            } catch (TimeoutException | ConnectException e) {
+            } catch (TimeoutException | ConnectException | IDoNotWantThisException e) {
                 System.out.println("### Round Abort ###");
             } finally {
                 algo.cleanUp();

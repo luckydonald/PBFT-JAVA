@@ -12,7 +12,7 @@ import java.util.List;
  * This emulates sensor data.
  */
 public class RealSensor extends FakeSensor {
-    ///sys/bus/w1/devices/XX-XXXX..../w1_slave
+    // /sys/bus/w1/devices/XX-XXXX..../w1_slave
 	/* path to search for devices in filesystem */
     private static String devicesPath = "/sys/bus/w1/devices";
 
@@ -35,7 +35,8 @@ public class RealSensor extends FakeSensor {
         this.id = id;
     }
 
-    public double getRealSensorValue() throws IDoNotWantThisException {
+    @Override
+    public double getSensorValue() throws IDoNotWantThisException {
         Path path = FileSystems.getDefault().getPath(devicesPath, id, valueFile);
         List<String> lines;
 
@@ -45,11 +46,11 @@ public class RealSensor extends FakeSensor {
         while (attempts > 0) {
             try {
                 lines = Files.readAllLines(path);
-                for(String line: lines) {
+                for (String line : lines) {
                     if (line.endsWith("YES"))
                         crcOK = true;
                     else if (line.matches(".*t=[0-9]+") && crcOK)
-                        return Integer.valueOf(line.substring(line.indexOf("=")+1))/1000.0;
+                        return Integer.valueOf(line.substring(line.indexOf("=") + 1)) / 1000.0;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -60,6 +61,4 @@ public class RealSensor extends FakeSensor {
 
         throw new IDoNotWantThisException("");
     }
-
-
 }
