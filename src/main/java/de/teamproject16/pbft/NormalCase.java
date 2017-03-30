@@ -58,6 +58,7 @@ public class NormalCase {
                 newSeq = calculateSequenceNumber();
             }
         }
+        r.setCurrentSequenceNo(this.sequenceNo);
         o("Changed sequence " + this.sequenceNo + " to " + newSeq);
         this.sequenceNo = newSeq;
         System.out.println("NODE ID: " + getNumber() + " SEQ_NO: " + sequenceNo);

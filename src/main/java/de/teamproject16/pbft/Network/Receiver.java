@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 public class Receiver extends Thread {
     private static String ANSWER_SYNTAX = "ANSWER ";
     private Logger logger = null;
+    private long current_sequence_no = Long.MAX_VALUE;
 
     public Receiver() {
         this.setName("Receiver");
@@ -186,6 +187,14 @@ public class Receiver extends Thread {
                 } catch(Exception ignore) {
                     // pass
                 }
+                if (msg.sequence_no < this.current_sequence_no) {
+                    System.out.println(
+                            "Dropped old " + msg.getTypeString() + " message from node " +
+                            msg.node + " with sequence_no " + msg.sequence_no + ". Delay: " +
+                            (this.current_sequence_no - msg.sequence_no)
+                    );
+                    return;
+                }
                 MessageQueue.messageQueue(msg);
             } catch (JSONException e) {
                 System.out.println("Convert the String to JSONObject failed.");
@@ -195,4 +204,11 @@ public class Receiver extends Thread {
         }
     }
 
+    public long getCurrentSequenceNo() {
+        return current_sequence_no;
+    }
+
+    public void setCurrentSequenceNo(long current_sequence_no) {
+        this.current_sequence_no = current_sequence_no;
+    }
 }

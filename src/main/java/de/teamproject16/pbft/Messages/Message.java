@@ -4,11 +4,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by IngridBoldt on 29.09.16.
- */
+ * A json serializable message. The base type.
+ **/
 public class Message {
     public int node;
-    int type;
+
+    public int getType() {
+        return type;
+    }
+    public String getTypeString() {
+        return Types._NAMES_.get(this.getType());
+    }
+
+    private int type;
     public long sequence_no;
 
     /**
