@@ -21,7 +21,7 @@ import static de.luckydonald.utils.Streams.toArrayList;
 import static java.util.stream.Collectors.groupingBy;
 
 public class NormalCase {
-    public int sequencelength = 5000;
+    public int sequenceLength = 5000;
 
     int leader = 1;
 
@@ -54,7 +54,8 @@ public class NormalCase {
         }
         while (this.sequenceNo >= newSeq) {
             synchronized (this) {
-                this.wait((long)((sequencelength/10)-1));
+                long waitMs = Math.min(((this.sequenceNo + 1) * sequenceLength)-System.currentTimeMillis(), 0);
+                this.wait(waitMs);
                 newSeq = calculateSequenceNumber();
             }
         }
@@ -69,7 +70,7 @@ public class NormalCase {
         int state = 0;
         // prevoteDone = false;
         while(true){
-           if((System.currentTimeMillis()/sequencelength) > this.sequenceNo){
+           if((System.currentTimeMillis()/ sequenceLength) > this.sequenceNo){
                 throw new TimeoutException();
             }
             synchronized (this.r) {
@@ -162,7 +163,7 @@ public class NormalCase {
     }
 
     private long calculateSequenceNumber() {
-        return System.currentTimeMillis() / sequencelength;
+        return System.currentTimeMillis() / sequenceLength;
     }
 
     /**
