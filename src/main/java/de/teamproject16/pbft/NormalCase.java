@@ -55,6 +55,7 @@ public class NormalCase {
         while (this.sequenceNo >= newSeq) {
             synchronized (this) {
                 long waitMs = Math.min(((this.sequenceNo + 1) * sequenceLength)-System.currentTimeMillis(), 0);
+                System.out.println("Waiting " + waitMs + "ms.");
                 this.wait(waitMs);
                 newSeq = calculateSequenceNumber();
             }
