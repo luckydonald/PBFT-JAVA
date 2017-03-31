@@ -7,6 +7,6 @@ import de.luckydonald.utils.dockerus.IDoNotWantThisException;
  */
 public class FakeSensor {
     public double getSensorValue() throws IDoNotWantThisException {
-        return Math.random()*10;
+        return Math.random()+22.5;
     }
 }
